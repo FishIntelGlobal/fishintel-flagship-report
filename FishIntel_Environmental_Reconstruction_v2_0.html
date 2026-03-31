@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FishIntel Global — Decision-Time Environmental Reconstruction</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   FISHINTEL GLOBAL — DECISION-TIME ENVIRONMENTAL RECONSTRUCTION
+   Anonymised Public Version — Report v2.1 Final
+   Status: PIPELINE VERIFIED — RECONSTRUCTION DATA POPULATED
+   Finding: Moderate conditions + critically reduced stability margin
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* No external font dependencies — print-stable stacks only */
+
+:root {
+  /* ── Palette — v2.1 lifted for readability ── */
+  --ink:          #eaecf0;
+  --ink-body:     #d4d8e0;
+  --ink-muted:    #9ba4b4;
+  --ink-dim:      #778192;
+  --navy:         #080f1a;
+  --navy-card:    #0d1520;
+  --navy-surface: #111c2b;
+  --navy-mid:     #1a2d45;
+  --navy-rule:    #243752;
+  --teal:         #3ecfab;
+  --teal-muted:   rgba(62,207,171,0.50);
+  --teal-bg:      rgba(62,207,171,0.08);
+  --teal-border:  rgba(62,207,171,0.28);
+  --amber:        #e6a817;
+  --amber-muted:  rgba(230,168,23,0.55);
+  --amber-bg:     rgba(230,168,23,0.10);
+  --amber-border: rgba(230,168,23,0.30);
+  --red:          #e05252;
+  --red-muted:    rgba(224,82,82,0.55);
+  --red-bg:       rgba(224,82,82,0.10);
+  --red-border:   rgba(224,82,82,0.25);
+  --white:        #ffffff;
+  --pending-bg:   rgba(62,207,171,0.07);
+  --pending-border: rgba(62,207,171,0.24);
+
+  /* ── Typography — print-stable, no external dependencies ── */
+  --font-display: Georgia, 'Times New Roman', 'Palatino Linotype', serif;
+  --font-body:    'Segoe UI', Optima, Candara, 'Helvetica Neue', Helvetica, sans-serif;
+  --font-mono:    Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* ── Layout ── */
+  --max-width:    800px;
+  --page-pad:     2.5rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--ink-body);
+  background: var(--navy);
+  line-height: 1.72;
+}
+
+.report {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COVER
+   ═══════════════════════════════════════════════════════════════════════ */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 0;
+  page-break-after: always;
+}
+
+.cover-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 3.5rem;
+}
+
+.cover-brand__mark {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--teal);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-brand__mark span {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.7rem;
+  color: var(--teal);
+  letter-spacing: -0.02em;
+}
+
+.cover-brand__name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.cover-rule {
+  width: 56px;
+  height: 2px;
+  background: var(--teal);
+  border: none;
+  margin-bottom: 2rem;
+  opacity: 0.7;
+}
+
+.cover-type {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 0.6rem;
+}
+
+.cover-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.85rem;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.cover-subtitle {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--ink-muted);
+  margin-bottom: 3.5rem;
+}
+
+.cover-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 2.5rem;
+  max-width: 460px;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--navy-rule);
+}
+
+.cover-meta dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+}
+
+.cover-meta dd {
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+  margin-bottom: 0.75rem;
+}
+
+.cover-status {
+  margin-top: 3rem;
+  display: inline-block;
+  padding: 0.5rem 1.1rem;
+  border: 1px dashed var(--amber-border);
+  background: var(--amber-bg);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.cover-class {
+  margin-top: 1.5rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--navy-rule);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SECTIONS
+   ═══════════════════════════════════════════════════════════════════════ */
+.section {
+  padding-top: 2.5rem;
+  padding-bottom: 0.5rem;
+  page-break-inside: avoid;
+}
+
+.section--break { page-break-before: always; }
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--teal);
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.7rem;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.section-rule {
+  width: 36px;
+  height: 2px;
+  background: var(--teal);
+  border: none;
+  margin: 0.85rem 0 1.5rem 0;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════ */
+p { margin-bottom: 1.05rem; font-size: 0.96rem; }
+
+p.lead {
+  font-size: 1.05rem;
+  line-height: 1.78;
+  color: var(--ink);
+}
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PIPELINE PENDING — VALUE PLACEHOLDERS
+   ═══════════════════════════════════════════════════════════════════════ */
+.pp {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--teal-muted);
+  border: 1px dashed var(--pending-border);
+  background: var(--pending-bg);
+  padding: 0.15rem 0.55rem;
+  letter-spacing: 0.02em;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+
+/* Pipeline-verified values — populated from reconstruction outputs */
+.pipeline-verified {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--teal);
+  letter-spacing: 0.01em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PIPELINE PENDING — SECTION BANNER
+   ═══════════════════════════════════════════════════════════════════════ */
+.pending-banner {
+  border: 1px dashed var(--pending-border);
+  background: var(--pending-bg);
+  padding: 1rem 1.35rem;
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pending-banner__icon {
+  font-size: 0.85rem;
+  color: var(--teal);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.pending-banner__text {
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--teal-muted);
+  line-height: 1.55;
+}
+
+.pending-banner__text strong {
+  font-weight: 600;
+  color: var(--teal);
+  font-style: normal;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VESSEL CARD
+   ═══════════════════════════════════════════════════════════════════════ */
+.vessel-card {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.4rem 1.6rem;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.vessel-card__header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.12rem;
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.vessel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 2.5rem;
+}
+
+.vessel-grid dt {
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-dim);
+}
+
+.vessel-grid dd {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  margin-bottom: 0.6rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COMPARISON TABLE
+   ═══════════════════════════════════════════════════════════════════════ */
+.comparison {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0 2rem 0;
+  font-size: 0.9rem;
+}
+
+.comparison th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 2px solid var(--navy-rule);
+  background: var(--navy-card);
+}
+
+.comparison th.col-param { color: var(--ink-muted); min-width: 160px; }
+.comparison th.col-narr  { color: var(--ink-muted); }
+.comparison th.col-recon { color: var(--teal); }
+.comparison th.col-note  { color: var(--ink-dim); }
+
+.comparison td {
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid var(--navy-rule);
+  vertical-align: top;
+}
+
+.comparison tr:last-child td { border-bottom: 2px solid var(--navy-rule); }
+
+.comparison td:first-child {
+  font-weight: 500;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.comparison .val-narr {
+  font-weight: 500;
+  color: var(--ink-body);
+}
+
+.comparison .val-narr small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  font-weight: 400;
+  margin-top: 0.1rem;
+}
+
+.comparison .val-recon { /* pipeline data cells */ }
+
+.comparison .note-cell {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TIMELINE
+   ═══════════════════════════════════════════════════════════════════════ */
+.timeline {
+  position: relative;
+  margin: 2rem 0;
+  padding-left: 2.5rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--navy-rule);
+}
+
+.tl-event {
+  position: relative;
+  margin-bottom: 1.6rem;
+  page-break-inside: avoid;
+}
+
+.tl-event::before {
+  content: '';
+  position: absolute;
+  left: -2.5rem;
+  top: 0.4rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--navy-mid);
+  background: var(--navy);
+}
+
+.tl-event--critical::before { background: var(--red); border-color: var(--red); }
+.tl-event--decision::before { background: var(--amber); border-color: var(--amber); }
+.tl-event--anchor::before   { background: var(--teal); border-color: var(--teal); }
+
+.tl-time {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--teal);
+  margin-bottom: 0.1rem;
+}
+
+.tl-label {
+  font-weight: 600;
+  font-size: 0.94rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+.tl-detail {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  line-height: 1.55;
+}
+
+.tl-env {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  padding: 0.2rem 0.55rem;
+  border-left: 2px solid var(--navy-mid);
+  background: var(--navy-card);
+  color: var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DATA CELLS ROW
+   ═══════════════════════════════════════════════════════════════════════ */
+.data-row {
+  display: flex;
+  gap: 0.85rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.data-cell {
+  flex: 1;
+  min-width: 130px;
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1rem;
+  text-align: center;
+}
+
+.data-cell__value {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.data-cell__value .unit {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--ink-dim);
+}
+
+.data-cell__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RISK INDICATOR
+   ═══════════════════════════════════════════════════════════════════════ */
+.risk-box {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.35rem;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+}
+
+.risk-box__score {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.45rem;
+  color: var(--red);
+  min-width: 55px;
+  text-align: center;
+}
+
+.risk-box__text {
+  font-size: 0.88rem;
+  color: var(--red);
+  font-weight: 500;
+}
+
+.risk-box__text span {
+  display: block;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 0.1rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FINDING BOX
+   ═══════════════════════════════════════════════════════════════════════ */
+.finding {
+  background: var(--navy-card);
+  border-left: 4px solid var(--teal);
+  padding: 1.5rem 1.75rem;
+  margin: 2rem 0;
+}
+
+.finding__label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--teal);
+  margin-bottom: 0.7rem;
+}
+
+.finding p {
+  font-size: 0.96rem;
+  line-height: 1.75;
+  color: var(--ink-body);
+  margin-bottom: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CONVERSION CHAIN
+   ═══════════════════════════════════════════════════════════════════════ */
+.conversion-chain {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.15rem 1.4rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 2;
+  color: var(--ink-muted);
+}
+
+.conversion-chain .label {
+  color: var(--ink-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ESCALATION DATA TABLE
+   ═══════════════════════════════════════════════════════════════════════ */
+.escalation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.escalation-table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 2px solid var(--teal-border);
+  background: var(--navy-card);
+  color: var(--ink-muted);
+}
+
+.escalation-table td {
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid var(--navy-rule);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--ink-body);
+}
+
+.escalation-table tr:last-child td {
+  border-bottom: 2px solid var(--navy-rule);
+}
+
+.escalation-table td:first-child {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.escalation-table .label-cell {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.escalation-table .risk-high {
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANALYTICAL NOTE (distinct from amber warning note)
+   ═══════════════════════════════════════════════════════════════════════ */
+.analytical-note {
+  background: var(--navy-card);
+  border-left: 3px solid var(--teal);
+  padding: 1.1rem 1.4rem;
+  margin: 1.5rem 0;
+  page-break-inside: avoid;
+}
+
+.analytical-note__label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  margin-bottom: 0.6rem;
+}
+
+.analytical-note p {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  line-height: 1.65;
+  margin-bottom: 0.7rem;
+}
+
+.analytical-note p:last-child {
+  margin-bottom: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CHART PLACEHOLDER (Environmental Escalation)
+   ═══════════════════════════════════════════════════════════════════════ */
+.chart-frame {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  margin: 1.5rem 0 2rem 0;
+  page-break-inside: avoid;
+}
+
+.chart-frame__header {
+  padding: 0.75rem 1.2rem;
+  border-bottom: 1px solid var(--navy-rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chart-frame__title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+
+.chart-frame__badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--teal-muted);
+  border: 1px dashed var(--pending-border);
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.04em;
+}
+
+.chart-area {
+  position: relative;
+  height: 320px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Grid lines */
+.chart-area__grid {
+  position: absolute;
+  inset: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.chart-area__gridline {
+  border-top: 1px solid var(--navy-rule);
+  position: relative;
+}
+
+.chart-area__gridline::before {
+  content: attr(data-label);
+  position: absolute;
+  left: -0.2rem;
+  top: -0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+/* Placeholder overlay */
+.chart-area__pending {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(8,15,26,0.55);
+  z-index: 2;
+}
+
+.chart-area__pending-icon {
+  width: 40px;
+  height: 40px;
+  border: 2px dashed var(--teal-muted);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--teal-muted);
+}
+
+.chart-area__pending-text {
+  font-size: 0.84rem;
+  color: var(--teal-muted);
+  font-style: italic;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* Event markers along x-axis */
+.chart-events {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  border-top: 1px solid var(--navy-rule);
+}
+
+.chart-event {
+  text-align: center;
+  padding: 0.6rem 0.25rem;
+  flex: 1;
+  position: relative;
+}
+
+.chart-event::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 8px;
+  background: var(--navy-rule);
+  transform: translateX(-50%);
+}
+
+.chart-event__time {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  display: block;
+}
+
+.chart-event__label {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+  display: block;
+  margin-top: 0.1rem;
+  line-height: 1.3;
+}
+
+.chart-event--critical .chart-event__time { color: var(--red); }
+.chart-event--decision .chart-event__time { color: var(--amber); }
+
+/* Legend */
+.chart-legend {
+  display: flex;
+  gap: 1.2rem;
+  padding: 0.65rem 1.2rem;
+  border-top: 1px solid var(--navy-rule);
+  flex-wrap: wrap;
+}
+
+.chart-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+}
+
+.chart-legend__swatch {
+  width: 16px;
+  height: 3px;
+  border-radius: 1px;
+}
+
+.chart-legend__swatch--wind     { background: var(--teal); }
+.chart-legend__swatch--gust     { background: var(--red); border-top: 1px dashed var(--red); height: 0; padding-top: 3px; }
+.chart-legend__swatch--wave     { background: var(--amber); }
+.chart-legend__swatch--pressure { background: var(--ink-muted); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FORESEEABILITY TEST BOX
+   ═══════════════════════════════════════════════════════════════════════ */
+.foresee-test {
+  background: var(--navy-card);
+  border: 1px solid var(--teal-border);
+  padding: 1.4rem 1.6rem;
+  margin: 2rem 0;
+  page-break-inside: avoid;
+}
+
+.foresee-test__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.foresee-test__icon {
+  font-size: 0.85rem;
+  color: var(--teal);
+}
+
+.foresee-test__title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+}
+
+.foresee-test__body {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  line-height: 1.7;
+}
+
+.foresee-test__body p {
+  margin-bottom: 0.7rem;
+  font-size: 0.92rem;
+}
+
+.foresee-test__body p:last-child {
+  margin-bottom: 0;
+}
+
+.foresee-test__criteria {
+  margin: 0.75rem 0;
+  padding-left: 1.2rem;
+}
+
+.foresee-test__criteria li {
+  font-size: 0.9rem;
+  color: var(--ink-body);
+  margin-bottom: 0.4rem;
+  line-height: 1.55;
+  list-style-type: none;
+  position: relative;
+}
+
+.foresee-test__criteria li::before {
+  content: '—';
+  position: absolute;
+  left: -1.1rem;
+  color: var(--teal-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   T_IRR / DECISION WINDOW
+   ═══════════════════════════════════════════════════════════════════════ */
+.tirr-card {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.4rem 1.6rem;
+  margin: 1.5rem 0;
+}
+
+.tirr-card__header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.12rem;
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.tirr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 2.5rem;
+}
+
+.tirr-grid dt {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-dim);
+}
+
+.tirr-grid dd {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  margin-bottom: 0.65rem;
+}
+
+/* Regime badge */
+.regime-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+}
+
+.regime-badge--pending {
+  color: var(--teal-muted);
+  border: 1px dashed var(--pending-border);
+  background: var(--pending-bg);
+}
+
+/* Window bar */
+.window-bar {
+  margin: 1.5rem 0;
+}
+
+.window-bar__track {
+  height: 28px;
+  background: var(--navy-surface);
+  border: 1px solid var(--navy-rule);
+  position: relative;
+  display: flex;
+}
+
+.window-bar__segment {
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.window-bar__segment--open {
+  background: rgba(62,207,171,0.15);
+  color: var(--teal);
+  border-right: 1px solid var(--teal-muted);
+}
+
+.window-bar__segment--narrowing {
+  background: rgba(230,168,23,0.12);
+  color: var(--amber);
+  border-right: 1px solid var(--amber-muted);
+}
+
+.window-bar__segment--closed {
+  background: rgba(224,82,82,0.1);
+  color: var(--red-muted);
+}
+
+.window-bar__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   EVIDENCE INTEGRITY BLOCK
+   ═══════════════════════════════════════════════════════════════════════ */
+.integrity {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.75rem;
+  margin: 3rem 0 2rem 0;
+  page-break-inside: avoid;
+}
+
+.integrity__title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-dim);
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.integrity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 2rem;
+}
+
+.integrity-grid dt {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-dim);
+  font-weight: 500;
+}
+
+.integrity-grid dd {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-bottom: 0.65rem;
+  word-break: break-all;
+}
+
+.integrity-grid dd.full-span { grid-column: 1 / -1; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANNOTATION / NOTE
+   ═══════════════════════════════════════════════════════════════════════ */
+.note {
+  background: var(--amber-bg);
+  border-left: 3px solid var(--amber-border);
+  padding: 0.8rem 1.1rem;
+  margin: 1.5rem 0;
+  font-size: 0.85rem;
+  color: var(--amber);
+  line-height: 1.6;
+}
+
+.note strong { color: var(--amber); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════════════ */
+.report-footer {
+  text-align: center;
+  padding: 2.5rem 0 4rem 0;
+  font-size: 0.74rem;
+  color: var(--ink-dim);
+  border-top: 1px solid var(--navy-rule);
+}
+
+.report-footer strong { color: var(--ink-muted); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════════════════════════════════════ */
+@media print {
+  body { background: #0a1018 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .report { max-width: 100%; padding: 0 1.5cm; }
+  .cover { min-height: auto; padding: 3cm 0; }
+  .section { padding-top: 1.5rem; }
+  .integrity, .vessel-card, .data-cell, .finding, .risk-box, .comparison th, .comparison td,
+  .pending-banner, .pp, .tl-env, .conversion-chain, .cover-status,
+  .chart-frame, .chart-area, .chart-area__pending, .chart-events, .chart-legend,
+  .chart-area__gridline, .window-bar__segment, .window-bar__track, .tirr-card,
+  .regime-badge, .chart-event, .foresee-test {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@page { size: A4; margin: 1.8cm 1.5cm; }
+</style>
+</head>
+<body>
+
+<div class="report">
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     COVER PAGE
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="cover" id="cover">
+
+  <div class="cover-brand">
+    <div class="cover-brand__mark"><span>FI</span></div>
+    <div class="cover-brand__name">FishIntel Global</div>
+  </div>
+
+  <hr class="cover-rule">
+
+  <div class="cover-type">Environmental Reconstruction Report</div>
+  <h1 class="cover-title">Decision-Time Environmental Reconstruction</h1>
+  <div class="cover-subtitle">Routine Environmental Conditions at the Stability Limit</div>
+
+  <dl class="cover-meta">
+    <dt>Incident Window</dt>
+    <dd>Summer daytime operations</dd>
+    <dt>Report Reference</dt>
+    <dd>FIG-2026-002</dd>
+    <dt>Vessel Category</dt>
+    <dd>~14 m steel stern trawler, single-handed</dd>
+    <dt>Report Version</dt>
+    <dd>v1.0</dd>
+    <dt>Operational Context</dt>
+    <dd>UK coastal fishing, English Channel</dd>
+    <dt>Classification</dt>
+    <dd>Public &mdash; Anonymised</dd>
+  </dl>
+
+  <div class="cover-status">Pipeline verified &mdash; Reconstruction data populated</div>
+
+  <div class="cover-class">Public version &mdash; Anonymised case study &mdash; Not protectively marked</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     01 — EXECUTIVE SUMMARY
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="executive-summary">
+  <span class="section-num">01</span>
+  <h2 class="section-title">Executive Summary</h2>
+  <hr class="section-rule">
+
+  <p><strong>Incident type:</strong> Capsize and foundering. A ~14 m UK-registered steel stern trawler, operating single-handed in the English Channel, capsized and sank during recovery of a heavy trawl catch. The skipper survived after boarding the vessel&rsquo;s liferaft. The vessel was a total constructive loss. No fatalities.</p>
+
+  <p><strong>Core question:</strong> What environmental conditions existed at the time of the capsize, and what was their relationship to the vessel&rsquo;s stability envelope?</p>
+
+  <p><strong>Method:</strong> ERA5 atmospheric reanalysis data was extracted at the incident coordinates across a four-point time window (06:00&ndash;11:00 UTC) and processed through the FishIntel deterministic reconstruction pipeline. The reconstruction quantifies sustained wind, gust speed, significant wave height, atmospheric pressure, temperature, and visibility at each extraction point.</p>
+
+  <p><strong>Key result:</strong> ERA5 reconstruction shows sustained 10 m winds of <span class="pipeline-verified">15.3&ndash;16.7</span> knots (Beaufort Force 4), gusts of <span class="pipeline-verified">22.9&ndash;23.7</span> knots, and significant wave height of <span class="pipeline-verified">0.82&ndash;0.88</span> metres across the incident window. Wind direction was consistently northerly (<span class="pipeline-verified">006&deg;&ndash;010&deg;</span>). Visibility was good. Atmospheric pressure was near-normal (<span class="pipeline-verified">1013.4&ndash;1014.1</span> hPa). The FishIntel pipeline classifies the environmental risk as LOW to MODERATE (<span class="pipeline-verified">36.7&ndash;41.1%</span>). For a vessel with adequate stability reserves, these conditions would have been routine.</p>
+
+  <p><strong>Analytical finding:</strong> This was not a case of extreme weather overwhelming a vessel. The environmental conditions were moderate, stable, and foreseeable &mdash; they matched the published forecast. The evidence indicates that the capsize occurred when the vessel&rsquo;s stability reserves were critically thin. Stability analysis conducted during the subsequent investigation placed the vessel only 35 mm above the danger-of-capsize zone, where the maximum recommended sea state is 0.8 m. ERA5 shows significant wave height of 0.82&ndash;0.88 m, which was below the amber-zone maximum of 1.6 m but close to, and marginally above, the 0.8 m threshold associated with the red danger-of-capsize zone. Routine environmental conditions became unsafe because vessel-specific safety margins were already critically reduced through accumulated modifications, low fuel, seized freeing ports, and operational loading from a high gantry point. The information required to calculate this vulnerability existed before the vessel sailed, but no such calculation had been undertaken at the time of the incident.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     02 — INCIDENT OVERVIEW
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="incident-overview">
+  <span class="section-num">02</span>
+  <h2 class="section-title">Incident Overview</h2>
+  <hr class="section-rule">
+
+  <div class="vessel-card">
+    <div class="vessel-card__header">Vessel Profile</div>
+    <dl class="vessel-grid">
+      <dt>Type</dt>
+      <dd>Decked stern trawler</dd>
+      <dt>Flag</dt>
+      <dd>United Kingdom</dd>
+      <dt>Length Overall</dt>
+      <dd>~14 m</dd>
+      <dt>Gross Tonnage</dt>
+      <dd>~19</dd>
+      <dt>Year of Build</dt>
+      <dd>Late 1980s</dd>
+      <dt>Construction</dt>
+      <dd>Steel</dd>
+      <dt>Propulsion</dt>
+      <dd>Single screw, blade rudder</dd>
+      <dt>Manning at Incident</dt>
+      <dd>1 (single-handed)</dd>
+      <dt>Normal Manning</dt>
+      <dd>3 (skipper + 2 crew)</dd>
+      <dt>Freeboard (measured)</dt>
+      <dd>305 mm</dd>
+      <dt>Stability Assessment</dt>
+      <dd>None conducted prior to incident</dd>
+      <dt>Fuel on Board</dt>
+      <dd>~9% of capacity</dd>
+    </dl>
+  </div>
+
+  <p>The vessel departed its home port at approximately 0640 local time, heading to established fishing grounds in the English Channel to trawl for demersal fish species. The skipper was operating single-handed for the second consecutive day due to crewing difficulties. The vessel had been unable to take fuel before departure as the harbour fuel pump was not working.</p>
+
+  <p>The vessel arrived at the fishing grounds approximately one hour later and deployed a single demersal trawl net. After approximately two hours of trawling, the skipper began hauling the first catch. The powered net drum struggled under an excessive load. The skipper varied course and speed to wash accumulated mud and sand from the net. The first Gilson rope parted under load &mdash; an early indicator of excessive weight in the cod end.</p>
+
+  <p>After rigging a replacement Gilson rope over the starboard side of the aft gantry, the skipper recovered a partial load of approximately 1.5 tonnes of mud, sand, gravel, starfish and some fish onto the main deck. At least another 1.5 tonnes remained in the net. When the cod end cleared the sea surface during a final recovery attempt, it slewed to starboard. The vessel heeled, the deck edge became immersed, water poured on deck, the catch already on deck slid to starboard, and the vessel capsized rapidly to starboard and sank.</p>
+
+  <p>The skipper, wearing a PFD with a personal locator beacon, entered the water, swam to the vessel&rsquo;s liferaft, and raised the alarm via mobile phone. The skipper was recovered uninjured approximately 40 minutes later by a nearby vessel.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     03 — ENVIRONMENTAL ESCALATION TIMELINE
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="escalation-timeline">
+  <span class="section-num">03</span>
+  <h2 class="section-title">Environmental Conditions Timeline</h2>
+  <hr class="section-rule">
+
+  <p>ERA5 reanalysis data was extracted at the incident coordinates across four timestamps spanning the operational window from departure through capsize. All values are produced by the FishIntel deterministic pipeline from ECMWF ERA5 source data.</p>
+
+  <table class="escalation-table">
+    <thead>
+      <tr>
+        <th>Time (UTC)</th>
+        <th>Event</th>
+        <th>Wind (kt)</th>
+        <th>Gusts (kt)</th>
+        <th>SWH (m)</th>
+        <th>Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>06:00</td>
+        <td class="label-cell">Departure</td>
+        <td><span class="pipeline-verified">15.3</span></td>
+        <td><span class="pipeline-verified">23.1</span></td>
+        <td><span class="pipeline-verified">0.82</span></td>
+        <td style="color:var(--amber);font-weight:600;">MODERATE (40.0%)</td>
+      </tr>
+      <tr>
+        <td>08:00</td>
+        <td class="label-cell">Fishing operations</td>
+        <td><span class="pipeline-verified">16.3</span></td>
+        <td><span class="pipeline-verified">23.7</span></td>
+        <td><span class="pipeline-verified">0.88</span></td>
+        <td style="color:var(--amber);font-weight:600;">MODERATE (41.1%)</td>
+      </tr>
+      <tr>
+        <td>10:00</td>
+        <td class="label-cell">Hauling / catch recovery</td>
+        <td><span class="pipeline-verified">15.5</span></td>
+        <td><span class="pipeline-verified">23.0</span></td>
+        <td><span class="pipeline-verified">0.87</span></td>
+        <td>LOW (37.6%)</td>
+      </tr>
+      <tr>
+        <td>11:00</td>
+        <td class="label-cell">Capsize</td>
+        <td><span class="pipeline-verified">16.7</span></td>
+        <td><span class="pipeline-verified">22.9</span></td>
+        <td><span class="pipeline-verified">0.85</span></td>
+        <td>LOW (36.7%)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Interpretation</div>
+    <p>Environmental conditions were stable across the entire five-hour operating window. Sustained wind varied by only 1.4 knots (15.3&ndash;16.7 kt). Gusts varied by 0.8 knots (22.9&ndash;23.7 kt). Significant wave height varied by only 0.06 m (0.82&ndash;0.88 m). There was no sudden deterioration, no squall, and no environmental step-change. The conditions at departure were substantively the same as the conditions at capsize.</p>
+    <p>The FishIntel risk classification marginally decreased from MODERATE to LOW across the window, reflecting a slight moderation consistent with the investigation narrative of wind dropping from Force 6 to Force 4&ndash;5 through the morning. The variable that changed during the operating window was not the environment &mdash; it was the vessel&rsquo;s effective stability, progressively reduced by operational actions.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     04 — NARRATIVE WEATHER DESCRIPTION
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="narrative-conditions">
+  <span class="section-num">04</span>
+  <h2 class="section-title">Narrative Weather Description</h2>
+  <hr class="section-rule">
+
+  <p>The following environmental conditions were described in the original accident investigation report. These represent the qualitative and semi-quantitative descriptions available in the published account.</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Parameter</th>
+        <th class="col-narr">Narrative Description</th>
+        <th class="col-note">Source &amp; Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Wind (morning)</td>
+        <td class="val-narr">Northerly, Force 6 <small>22&ndash;27 knots</small></td>
+        <td class="note-cell">Early-day conditions.</td>
+      </tr>
+      <tr>
+        <td>Wind (at capsize)</td>
+        <td class="val-narr">Northerly, Force 4 to 5 <small>11&ndash;21 knots</small></td>
+        <td class="note-cell">Accident particulars. Dropping to Force 3 by end of day.</td>
+      </tr>
+      <tr>
+        <td>Seas (Force 6)</td>
+        <td class="val-narr">2.5 m</td>
+        <td class="note-cell">Associated with morning Force 6 winds.</td>
+      </tr>
+      <tr>
+        <td>Seas (Force 4)</td>
+        <td class="val-narr">1.5 m</td>
+        <td class="note-cell">&ldquo;Reducing to 1.5 m in the force 4 winds.&rdquo;</td>
+      </tr>
+      <tr>
+        <td>Water temperature</td>
+        <td class="val-narr">16&deg;C</td>
+        <td class="note-cell">&mdash;</td>
+      </tr>
+      <tr>
+        <td>Visibility</td>
+        <td class="val-narr">Good, occasionally moderate</td>
+        <td class="note-cell">&mdash;</td>
+      </tr>
+      <tr>
+        <td>Forecast accuracy</td>
+        <td class="val-narr">Conditions matched Met Office forecast</td>
+        <td class="note-cell">Skipper consulted forecast before departure.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Analytical note:</strong> The investigation provides two wind descriptions at different points: Force 6 for morning conditions and Force 4&ndash;5 for the time of capsize. These are consistent with a moderating wind through the morning. The sea-state description of 1.5 m in Force 4 conditions is compared against ERA5 significant wave height in the reconstruction.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     05 — ENVIRONMENTAL RECONSTRUCTION
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="environmental-reconstruction">
+  <span class="section-num">05</span>
+  <h2 class="section-title">Environmental Reconstruction</h2>
+  <hr class="section-rule">
+
+  <p>The following table compares the environmental conditions described in the narrative account with the values reconstructed by FishIntel using ECMWF ERA5 atmospheric reanalysis data at the incident position. The 11:00 UTC extraction (nearest hour to capsize) is used as the primary comparison point.</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Parameter</th>
+        <th class="col-narr">Narrative</th>
+        <th class="col-recon">ERA5 Reconstruction</th>
+        <th class="col-note">Assessment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Wind speed (sustained)</td>
+        <td class="val-narr">Force 4&ndash;5 <small>(11&ndash;21 kt)</small></td>
+        <td class="val-recon"><span class="pipeline-verified">16.7 kt</span></td>
+        <td class="note-cell"><strong>Consistent.</strong> ERA5 confirms Beaufort Force 4 at capsize time.</td>
+      </tr>
+      <tr>
+        <td>Wind gusts</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified">22.9 kt</span></td>
+        <td class="note-cell">Gust factor 1.37. Intermittent gusts reached Force 6 equivalent.</td>
+      </tr>
+      <tr>
+        <td>Wind direction</td>
+        <td class="val-narr">Northerly</td>
+        <td class="val-recon"><span class="pipeline-verified">010&deg;</span></td>
+        <td class="note-cell"><strong>Consistent.</strong> Confirmed nearly due north throughout.</td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td class="val-narr">1.5 m <small>(in Force 4)</small></td>
+        <td class="val-recon"><span class="pipeline-verified">0.85 m</span></td>
+        <td class="note-cell"><strong>Divergent.</strong> ERA5 gridded SWH lower than narrative description. See analytical note.</td>
+      </tr>
+      <tr>
+        <td>Wave period</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified">4.0 s</span></td>
+        <td class="note-cell">Short-period wind waves consistent with local Force 4 generation.</td>
+      </tr>
+      <tr>
+        <td>Atmospheric pressure</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified">1013.7 hPa</span></td>
+        <td class="note-cell">Near-normal. No significant synoptic forcing.</td>
+      </tr>
+      <tr>
+        <td>Air temperature</td>
+        <td class="val-narr"><em>Not stated</em> <small>(water 16&deg;C)</small></td>
+        <td class="val-recon"><span class="pipeline-verified">16.1&deg;C</span></td>
+        <td class="note-cell"><strong>Consistent</strong> with stated water temperature of 16&deg;C.</td>
+      </tr>
+      <tr>
+        <td>Visibility</td>
+        <td class="val-narr">Good, occasionally moderate</td>
+        <td class="val-recon"><span class="pipeline-verified">Good</span> <small>(dewpoint spread 4.4&deg;C)</small></td>
+        <td class="note-cell"><strong>Consistent.</strong></td>
+      </tr>
+      <tr>
+        <td>Wind shear (10&ndash;100 m)</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified">4.5 kt</span></td>
+        <td class="note-cell">Moderate shear. Wind at gantry height close to 10 m reference.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="data-row">
+    <div class="data-cell">
+      <div class="data-cell__value"><span class="pipeline-verified">16.7</span> <span class="unit">kt</span></div>
+      <div class="data-cell__label">Sustained Wind (10 m)</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value"><span class="pipeline-verified">22.9</span> <span class="unit">kt</span></div>
+      <div class="data-cell__label">Gust Speed</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value"><span class="pipeline-verified">0.85</span> <span class="unit">m</span></div>
+      <div class="data-cell__label">Sig. Wave Height</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value"><span class="pipeline-verified">1013.7</span> <span class="unit">hPa</span></div>
+      <div class="data-cell__label">Pressure MSL</div>
+    </div>
+  </div>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Analytical Note &mdash; Wave Height Divergence</div>
+    <p>The investigation report describes seas of 1.5 m in Force 4 conditions. ERA5 reconstruction shows a significant wave height of 0.85 m at the incident coordinates. This divergence of approximately 0.65 m requires transparent treatment.</p>
+    <p>ERA5 is a gridded reanalysis product at approximately 31 km horizontal resolution. It does not capture localised effects including: shallow-water wave steepening over the variable-depth seabed; tidal current interaction with northerly waves; or the visual sea-state impression experienced at deck level on a ~14 m vessel, which includes whitecapping, spray, and vessel motion that compounds the perceived severity beyond the statistical significant wave height.</p>
+    <p>This report presents both values. The ERA5 value of 0.85 m represents the gridded significant wave height. The narrative value of 1.5 m represents the local description from the investigation. The vessel stability comparison considers both as the lower and upper bounds of the actual sea state.</p>
+  </div>
+
+  <div class="conversion-chain">
+    <span class="label">Unit Conversion Chain &mdash; Wind Speed</span>
+    ERA5 source: <span class="pipeline-verified">8.5918</span> m/s &times; 1.94384 = <span class="pipeline-verified">16.7 kt</span>
+    <span class="label" style="margin-top:0.5rem">Unit Conversion Chain &mdash; Pressure</span>
+    ERA5 source: <span class="pipeline-verified">101366.25</span> Pa &divide; 100 = <span class="pipeline-verified">1013.7 hPa</span>
+    <span class="label" style="margin-top:0.5rem">Unit Conversion Chain &mdash; Temperature</span>
+    ERA5 source: <span class="pipeline-verified">289.28</span> K &minus; 273.15 = <span class="pipeline-verified">16.1&deg;C</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     06 — DECISION-TIME ENVIRONMENT (TIMELINE)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="decision-timeline">
+  <span class="section-num">06</span>
+  <h2 class="section-title">Decision-Time Environment</h2>
+  <hr class="section-rule">
+
+  <p>The following chronology presents the sequence of events from departure through capsize, with the reconstructed environmental state at the nearest ERA5 extraction point. Decision gates &mdash; points where the operator had the opportunity to alter the outcome &mdash; are identified.</p>
+
+  <div class="timeline">
+
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">0540 UTC &mdash; Departure Decision</div>
+      <div class="tl-label">Vessel departs home port, single-handed</div>
+      <div class="tl-detail">Heading NE toward fishing grounds. Unable to take fuel (pump not working). Fuel on board approximately 9% of capacity. Skipper had consulted the Met Office forecast. Second consecutive day operating alone.</div>
+      <div class="tl-env">ERA5 06:00: 15.3 kt N (006&deg;) | Gusts 23.1 kt | SWH 0.82 m | 1014.1 hPa | MODERATE (40.0%)</div>
+    </div>
+
+    <div class="tl-event tl-event--anchor">
+      <div class="tl-time">~0700 UTC</div>
+      <div class="tl-label">Fishing gear deployed</div>
+      <div class="tl-detail">Single demersal trawl net deployed at the fishing grounds.</div>
+      <div class="tl-env">ERA5 08:00: 16.3 kt N (007&deg;) | Gusts 23.7 kt | SWH 0.88 m | 1014.1 hPa | MODERATE (41.1%)</div>
+    </div>
+
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">~0930 UTC &mdash; Hauling Decision</div>
+      <div class="tl-label">Starts hauling &mdash; heavy load evident</div>
+      <div class="tl-detail">Net drum struggling under excessive load. Skipper varies course and speed to wash out debris. First Gilson rope parts under load &mdash; indicator of excessive weight.</div>
+      <div class="tl-env">ERA5 10:00: 15.5 kt N (007&deg;) | Gusts 23.0 kt | SWH 0.87 m | 1013.4 hPa | LOW (37.6%)</div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-time">~1020 UTC</div>
+      <div class="tl-label">Partial load recovered to deck</div>
+      <div class="tl-detail">~1.5 t of mud, sand, starfish and fish released onto main deck. Replacement Gilson rope rigged on aft gantry. At least 1.5 t remains in net.</div>
+    </div>
+
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">~1031 UTC &mdash; Final Recovery Decision</div>
+      <div class="tl-label">Final cod end recovery attempt</div>
+      <div class="tl-detail">Vessel on south-westerly course, wind and sea on starboard quarter. Main load on Gilson rope over the starboard side of the aft gantry. Operating single-handed: operator simultaneously managing heading, winch, and catch.</div>
+    </div>
+
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">~1050 UTC</div>
+      <div class="tl-label">Cod end clears water &mdash; slews to starboard</div>
+      <div class="tl-detail">Full weight of suspended catch acts from the highest point on the vessel. Vessel heels to starboard. Deck edge immersed. Water on deck. Catch slides to starboard. Capsizing moment increases continuously. No means to control transverse slewing.</div>
+    </div>
+
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">1056 UTC &mdash; CAPSIZE</div>
+      <div class="tl-label">Vessel capsizes to starboard and founders</div>
+      <div class="tl-detail">Continuous roll to starboard. Downflooding through open watertight doors. Vessel sinks bow-first. Skipper enters water, swims to liferaft.</div>
+      <div class="tl-env">ERA5 11:00: 16.7 kt N (010&deg;) | Gusts 22.9 kt | SWH 0.85 m | 1013.7 hPa | LOW (36.7%)</div>
+    </div>
+
+    <div class="tl-event tl-event--anchor">
+      <div class="tl-time">~1140 UTC</div>
+      <div class="tl-label">Skipper recovered from liferaft</div>
+      <div class="tl-detail">Skipper uninjured. Recovered by a nearby vessel responding to coastguard broadcast.</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     07 — ENVIRONMENTAL PROFILE — VERIFIED
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="environmental-escalation">
+  <span class="section-num">07</span>
+  <h2 class="section-title">Environmental Profile &mdash; Verified Data</h2>
+  <hr class="section-rule">
+
+  <p>The following graphic presents the verified four-point environmental profile across the incident window. Each data point is derived from the FishIntel reconstruction pipeline at the coordinates and timestamp shown.</p>
+
+  <div class="chart-frame">
+    <div class="chart-frame__header">
+      <div class="chart-frame__title">Environmental Conditions &mdash; Four-Point Extraction</div>
+      <div class="chart-frame__badge" style="color:var(--teal);border-color:var(--teal-border);">VERIFIED DATA</div>
+    </div>
+
+    <div style="padding:1.5rem 1.5rem 0.5rem 3.5rem;position:relative;">
+      <div style="position:absolute;left:0;top:1.5rem;bottom:0.5rem;width:3rem;display:flex;flex-direction:column;justify-content:space-between;text-align:right;padding-right:0.5rem;">
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">30 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">24 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">18 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">12 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">6 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">0</span>
+      </div>
+
+      <div style="position:absolute;left:3.5rem;right:1.5rem;top:1.5rem;bottom:0.5rem;display:flex;flex-direction:column;justify-content:space-between;">
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+      </div>
+
+      <div style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;position:relative;z-index:1;">
+
+        <!-- 06:00 UTC -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:51%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">15.3</span>
+            </div>
+            <div style="width:22px;height:77%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">23.1</span>
+            </div>
+            <div style="width:22px;height:27.3%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">0.82m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-muted);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">06:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Departure</div>
+        </div>
+
+        <!-- 08:00 UTC -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:54.3%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">16.3</span>
+            </div>
+            <div style="width:22px;height:79%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">23.7</span>
+            </div>
+            <div style="width:22px;height:29.3%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">0.88m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-muted);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">08:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Fishing</div>
+        </div>
+
+        <!-- 10:00 UTC -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:51.7%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">15.5</span>
+            </div>
+            <div style="width:22px;height:76.7%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">23.0</span>
+            </div>
+            <div style="width:22px;height:29%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">0.87m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--amber);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">10:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Hauling</div>
+        </div>
+
+        <!-- 11:00 UTC -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:55.7%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">16.7</span>
+            </div>
+            <div style="width:22px;height:76.3%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">22.9</span>
+            </div>
+            <div style="width:22px;height:28.3%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">0.85m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--red);font-weight:600;padding-top:0.3rem;border-top:2px solid var(--red);width:100%;text-align:center;">11:00</div>
+          <div style="font-size:0.65rem;color:var(--red);text-align:center;font-weight:500;">CAPSIZE</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="chart-legend">
+      <div class="chart-legend__item">
+        <div class="chart-legend__swatch chart-legend__swatch--wind"></div>
+        Sustained wind (kt) &mdash; ERA5 10 m
+      </div>
+      <div class="chart-legend__item">
+        <div class="chart-legend__swatch chart-legend__swatch--gust"></div>
+        Gusts (kt) &mdash; ERA5 instantaneous 10 m
+      </div>
+      <div class="chart-legend__item">
+        <div class="chart-legend__swatch chart-legend__swatch--wave"></div>
+        Sig. wave height (m, scaled)
+      </div>
+    </div>
+  </div>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Interpretation</div>
+    <p>The four-point extraction reveals a flat environmental profile. Unlike the first FishIntel flagship reconstruction &mdash; which showed a slowly escalating storm regime &mdash; this case shows environmental conditions that were functionally constant across the entire operating window. All four extraction points show sustained wind within a 1.4 kt range and wave height within a 0.06 m range. The visual uniformity of the chart is itself the finding: the environment did not change. The vessel&rsquo;s stability did.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     08 — DECISION WINDOW / T_IRR ANALYSIS
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="tirr-analysis">
+  <span class="section-num">08</span>
+  <h2 class="section-title">Decision Window / T<sub>irr</sub> Assessment</h2>
+  <hr class="section-rule">
+
+  <p>FishIntel&rsquo;s Time-to-Irreversibility (T<sub>irr</sub>) framework identifies when an operational situation becomes irreversible &mdash; the point beyond which no reasonable intervention by the vessel&rsquo;s crew can change the outcome. In this case, the T<sub>irr</sub> analysis addresses a fundamentally different mechanism from the first flagship reconstruction: the decision window closed not through environmental escalation, but through progressive consumption of stability reserves.</p>
+
+  <div class="tirr-card">
+    <div class="tirr-card__header">Decision Window Findings</div>
+    <dl class="tirr-grid">
+      <dt>Environmental Risk Regime</dt>
+      <dd>LOW&ndash;MODERATE throughout (36.7&ndash;41.1%)</dd>
+      <dt>Environmental Escalation</dt>
+      <dd>None. Conditions stable across incident window.</dd>
+      <dt>Stability Regime at Departure</dt>
+      <dd>Amber zone (Wolfson Guidance) &mdash; low level of safety</dd>
+      <dt>Stability Margin to Red Zone</dt>
+      <dd>35 mm freeboard</dd>
+      <dt>Critical Decision Gate</dt>
+      <dd>Final cod end recovery (~1031 UTC) with ~3 t total load, single-handed</dd>
+      <dt>Point of Irreversibility</dt>
+      <dd>Cod end clears water and slews to starboard (~1050 UTC)</dd>
+    </dl>
+    <div style="margin-top:0.8rem;padding-top:0.6rem;border-top:1px solid var(--navy-rule);font-size:0.78rem;color:var(--ink-dim);font-style:italic;">
+      T<sub>irr</sub> in this case is driven by vessel dynamics, not environmental progression. The environmental state remained within the same regime throughout. Irreversibility was reached when the suspended catch created a capsizing moment that exceeded the vessel&rsquo;s remaining righting capacity.
+    </div>
+  </div>
+
+  <p>The T<sub>irr</sub> framework classifies operational situations into three regimes:</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Regime</th>
+        <th class="col-narr">Classification</th>
+        <th class="col-note">Meaning</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Regime 1</td>
+        <td class="val-narr">Reversible</td>
+        <td class="note-cell">Conditions permit effective intervention. The decision window is open. Corrective action remains available and viable.</td>
+      </tr>
+      <tr>
+        <td>Regime 2</td>
+        <td class="val-narr">Conditionally reversible</td>
+        <td class="note-cell">Intervention is possible but constrained. The window is narrowing. Success depends on immediate action and favourable conditions.</td>
+      </tr>
+      <tr>
+        <td>Regime 3</td>
+        <td class="val-narr">Irreversible</td>
+        <td class="note-cell">No reasonable intervention can alter the outcome. The situation has passed T<sub>irr</sub>. The operational decision that could have changed the outcome had to be taken earlier.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="window-bar">
+    <div class="window-bar__track">
+      <div class="window-bar__segment window-bar__segment--open" style="flex:3;">
+        OPEN
+      </div>
+      <div class="window-bar__segment window-bar__segment--narrowing" style="flex:3;">
+        NARROWING
+      </div>
+      <div class="window-bar__segment window-bar__segment--closed" style="flex:1;">
+        CLOSED
+      </div>
+    </div>
+    <div class="window-bar__labels">
+      <span>Departure (0540 UTC)</span>
+      <span>Heavy load evident (~0930)</span>
+      <span>Cod end clears water (~1050)</span>
+    </div>
+  </div>
+
+  <p>At departure, the situation was in Regime 1: the decision window was fully open. The environment was moderate and foreseeable. When the excessive load became apparent and the first Gilson rope parted, the situation moved into Regime 2: corrective action was still available (the catch could have been released), but the margin was narrowing with each additional tonne on deck. When the cod end cleared the water and slewed to starboard, the situation entered Regime 3 within seconds: the capsizing moment exceeded the remaining righting capacity and no intervention could arrest the roll.</p>
+
+  <p>The environmental conditions played no escalating role in this progression. The T<sub>irr</sub> transition from Regime 1 to Regime 3 appears to have been determined by the operational loading sequence acting against a vessel with critically depleted stability reserves.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     09 — RISK ANALYSIS
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="risk-analysis">
+  <span class="section-num">09</span>
+  <h2 class="section-title">Risk Analysis</h2>
+  <hr class="section-rule">
+
+  <div class="risk-box" style="background:var(--amber-bg);border-color:var(--amber-border);">
+    <div class="risk-box__score" style="color:var(--amber);"><span class="pipeline-verified">36&ndash;41</span></div>
+    <div class="risk-box__text" style="color:var(--amber);">
+      Environmental Risk: <span class="pipeline-verified">LOW&ndash;MODERATE</span>
+      <span>Pipeline classification across all four extraction timestamps</span>
+    </div>
+  </div>
+
+  <p>The FishIntel risk assessment integrates multiple environmental drivers to produce a single quantified score. The drivers for this case include:</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Risk Driver</th>
+        <th class="col-recon">Value</th>
+        <th class="col-note">Contribution</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sustained wind</td>
+        <td><span class="pipeline-verified">16.7 kt</span></td>
+        <td class="note-cell">Beaufort Force 4. Within normal operating parameters.</td>
+      </tr>
+      <tr>
+        <td>Gust speed</td>
+        <td><span class="pipeline-verified">22.9 kt</span></td>
+        <td class="note-cell">Intermittent Force 6 equivalent. Gust factor 1.37.</td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td><span class="pipeline-verified">0.85 m</span></td>
+        <td class="note-cell">Below the amber-zone maximum (1.6 m) but close to, and marginally above, the 0.8 m red danger-of-capsize threshold for this vessel&rsquo;s stability condition.</td>
+      </tr>
+      <tr>
+        <td>Wind vs tide</td>
+        <td><span class="pipeline-verified">with</span></td>
+        <td class="note-cell">Wind and waves aligned. No opposing-tide amplification.</td>
+      </tr>
+      <tr>
+        <td>Visibility</td>
+        <td><span class="pipeline-verified">good</span></td>
+        <td class="note-cell">No impairment to situational awareness.</td>
+      </tr>
+      <tr>
+        <td>Wind shear</td>
+        <td><span class="pipeline-verified">4.5 kt</span></td>
+        <td class="note-cell">Moderate. Wind at gantry height close to surface reference.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The environmental risk classification of LOW&ndash;MODERATE is correct for a vessel with adequate stability reserves. The analytical significance of this case lies in the compound interaction between moderate environmental forcing and vessel-specific vulnerability factors: freeboard only 35 mm above the Wolfson danger zone; fuel at 9% capacity (raising VCG); three freeing ports seized and two covered (trapping deck water); approximately 3 tonnes of catch loaded from a high gantry point; and single-handed operation limiting the operator&rsquo;s capacity to manage multiple simultaneous tasks.</p>
+
+  <div class="foresee-test">
+    <div class="foresee-test__header">
+      <div class="foresee-test__icon">&#9670;</div>
+      <div class="foresee-test__title">Foreseeability Test</div>
+    </div>
+    <div class="foresee-test__body">
+      <p>This report assesses foreseeability by applying the following test to the reconstructed environmental evidence:</p>
+      <ol class="foresee-test__criteria">
+        <li>The environmental data required to assess the risk existed and was accessible at the time of the decision (ERA5 reanalysis confirms this retrospectively; Met Office forecast data confirms it prospectively).</li>
+        <li>The vessel-specific data required to calculate stability limits existed: the Wolfson Guidance method requires only length overall and beam, both known quantities. This calculation was never performed.</li>
+        <li>Had the Wolfson method been applied, it would have identified that the vessel was operating in the amber zone with a maximum recommended sea state of 1.6 m and only 35 mm of freeboard margin above the red zone (max 0.8 m). ERA5 shows SWH of 0.82&ndash;0.88 m, which was below the amber-zone maximum but close to, and marginally above, the 0.8 m red-zone threshold.</li>
+        <li>The environmental conditions were foreseeable and matched the published forecast. There was no sudden, unforeseeable step-change. The conditions were continuous and stable throughout the operating window.</li>
+      </ol>
+      <p>This report does not attribute fault or negligence to any individual. The foreseeability test evaluates the environmental evidence and vessel stability data, not the decisions of specific persons. Its purpose is to establish whether the conditions that contributed to the incident were objectively knowable before the outcome occurred.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     10 — KEY ANALYTICAL FINDING
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="key-finding">
+  <span class="section-num">10</span>
+  <h2 class="section-title">Key Analytical Finding</h2>
+  <hr class="section-rule">
+
+  <div class="finding">
+    <div class="finding__label">Key Finding</div>
+    <p>Environmental reconstruction confirms that this vessel capsized in conditions the FishIntel pipeline classifies as LOW to MODERATE risk: sustained wind 15.3&ndash;16.7 knots (Beaufort Force 4), significant wave height 0.82&ndash;0.88 metres, good visibility, and stable atmospheric pressure across the entire operating window. These conditions were moderate, foreseeable, and matched the published forecast. For a vessel with adequate stability reserves, they would have been unremarkable. The evidence indicates that the capsize arose from the interaction of routine environmental conditions with a vessel whose stability reserves had been critically reduced through accumulated modifications, low fuel state, seized freeing ports, and the progressive operational loading of a heavy catch from a high gantry point. The information required to calculate the vessel&rsquo;s vulnerability to these conditions existed before departure &mdash; the Wolfson Guidance method requires only length and beam &mdash; but no such calculation had been undertaken at the time of the incident.</p>
+  </div>
+
+  <div style="background:var(--navy-card);border:1px solid var(--amber-border);padding:1rem 1.4rem;margin:1.5rem 0;">
+    <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--amber);margin-bottom:0.5rem;">Pipeline Classification</div>
+    <p style="margin-bottom:0;"><span class="pipeline-verified">Environmental risk LOW&ndash;MODERATE (36.7&ndash;41.1%) across all extraction timestamps. Conditions stable: wind 15.3&ndash;16.7 kt, gusts 22.9&ndash;23.7 kt, SWH 0.82&ndash;0.88 m. No environmental escalation detected. Vessel stability condition placed it close to, and marginally above, the Wolfson 0.8 m red danger-of-capsize threshold (ERA5 SWH 0.85 m, margin 35 mm freeboard). Analysis indicates the capsize was associated with compound operational loading against critically depleted stability reserves, not with environmental exceedance.</span></p>
+  </div>
+
+  <p>This finding is derived from the quantified environmental reconstruction and the vessel stability data from the investigation, not from the narrative account. It represents what was objectively knowable at the time the critical operational decision was made, based on environmental data and vessel parameters that existed and were accessible.</p>
+
+  <p>This report does not attribute fault or negligence to any individual. The operator was experienced, consulted the forecast, wore a PFD, and survived the incident. The purpose of the reconstruction is to quantify the environmental conditions and their relationship to the vessel&rsquo;s stability state.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     11 — EVIDENCE INTEGRITY
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="evidence-integrity">
+  <span class="section-num">11</span>
+  <h2 class="section-title">Evidence Integrity</h2>
+  <hr class="section-rule">
+
+  <p>This report is a rendering of outputs produced by the FishIntel deterministic reconstruction pipeline. All environmental values presented are traceable to their source data through an auditable processing chain.</p>
+
+  <div class="integrity">
+    <div class="integrity__title">Pipeline Verification</div>
+    <dl class="integrity-grid">
+      <dt>Data Source</dt>
+      <dd>ECMWF ERA5 Atmospheric Reanalysis</dd>
+      <dt>Processor Version</dt>
+      <dd><span class="pipeline-verified">5.3.0</span></dd>
+      <dt>Runner Version</dt>
+      <dd><span class="pipeline-verified">2.1.0</span></dd>
+      <dt>Raw Format</dt>
+      <dd><span class="pipeline-verified">era5_raw_v1</span></dd>
+      <dt>Reconstruction Timestamp</dt>
+      <dd><span class="pipeline-verified">2026-03-31T21:45:00Z</span></dd>
+      <dt>Extraction Timestamps</dt>
+      <dd>06:00, 08:00, 10:00, 11:00 UTC</dd>
+      <dt>Case Position</dt>
+      <dd><span class="pipeline-verified">50.52</span>&deg;N, <span class="pipeline-verified">3.27</span>&deg;W</dd>
+      <dt>Case Date</dt>
+      <dd><span class="pipeline-verified">2021-06-18</span></dd>
+    </dl>
+  </div>
+
+  <p>The pipeline operates as follows: ERA5 NetCDF data is extracted at the incident coordinates and time window by the ERA5 processor, producing raw values in source-native units (m/s, Pa, K, m). These raw values are converted using explicit arithmetic (m/s &times; 1.94384 = knots; Pa &divide; 100 = hPa; K &minus; 273.15 = &deg;C). The reconstruction is deterministic: the same inputs will always produce the same outputs.</p>
+
+  <p>No manual adjustments, interpolations, or subjective corrections are applied at any stage.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     12 — METHODOLOGY
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="methodology">
+  <span class="section-num">12</span>
+  <h2 class="section-title">Methodology</h2>
+  <hr class="section-rule">
+
+  <p>FishIntel Global reconstructs the environmental conditions surrounding maritime incidents using ECMWF ERA5 atmospheric reanalysis data &mdash; the same dataset relied upon by meteorological agencies, climate researchers, and aviation safety authorities worldwide.</p>
+
+  <p>ERA5 provides hourly estimates of atmospheric, land-surface, and ocean-wave variables on a global grid at approximately 31 km horizontal resolution. It assimilates millions of observations per cycle and is continuously quality-controlled by the European Centre for Medium-Range Weather Forecasts. ERA5 data is freely available and independently verifiable by any party.</p>
+
+  <p>The FishIntel reconstruction pipeline extracts environmental variables at the precise coordinates and time window of each incident. All values pass through a unit-gated validation layer that enforces explicit conversion factors and plausibility bounds using Decimal arithmetic &mdash; preventing the silent unit errors that are a known source of analytical failure in environmental data processing. The pipeline is deterministic: identical inputs always produce identical outputs.</p>
+
+  <p>This reconstruction operates within defined boundaries. ERA5 is a gridded reanalysis product, not a point measurement. It does not capture localised effects smaller than its grid resolution, such as harbour-scale wind funnelling or shallow-water wave refraction. Where a case involves such effects, the reconstruction states this limitation explicitly. The system is designed to produce defensible evidence, not to overstate its precision.</p>
+
+  <p>FishIntel&rsquo;s role is complementary to national maritime accident investigation. Investigation bodies establish causes and circumstances. FishIntel quantifies the environmental context in which operational decisions were made, using data sources that existed at the time of those decisions. The focus is on what was knowable, not on who is to blame.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     13 — CLOSING STATEMENT
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="closing">
+  <span class="section-num">13</span>
+  <h2 class="section-title">Closing Statement</h2>
+  <hr class="section-rule">
+
+  <p>Maritime incidents are frequently described after the fact using qualitative or semi-quantitative environmental descriptions: &ldquo;strong winds,&rdquo; &ldquo;heavy swell,&rdquo; &ldquo;poor visibility.&rdquo; These descriptions are valuable for narrative understanding but do not quantify the decision-time environment with the precision required by insurers, regulators, and legal professionals.</p>
+
+  <p>This reconstruction addresses a different and equally important category of incident: one where the environmental conditions were not extreme. Force 4 winds. Sub-metre wave height. Good visibility. The kind of conditions in which experienced fishermen go to work. Environmental reconstruction confirms this ordinariness &mdash; and reveals why it matters.</p>
+
+  <p>The vessel that capsized on this day had a stability margin so thin that conditions which appeared routine were, for this specific vessel in this specific configuration, at the boundary of the danger zone. The Wolfson Guidance &mdash; a calculation requiring only two measurements, both known &mdash; would have shown this. The Met Office forecast was accurate. The environmental conditions were foreseeable. What was missing was the bridge between environmental knowledge and vessel-specific vulnerability.</p>
+
+  <p>This is the gap that foreseeability intelligence is designed to close. Not by predicting accidents, but by quantifying the conditions under which they become possible &mdash; before the critical moment arrives.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="report-footer">
+  <strong>FishIntel Global</strong> &mdash; Maritime Foreseeability Intelligence<br>
+  This report is generated from verified FishIntel reconstruction pipeline outputs.<br>
+  Environmental reconstruction methodology &amp; system: &copy; FishIntel Global (FIG LTD).<br>
+  Source incident data: Crown copyright. Used in accordance with published reproduction terms.
+</div>
+
+</div><!-- /.report -->
+
+</body>
+</html>
