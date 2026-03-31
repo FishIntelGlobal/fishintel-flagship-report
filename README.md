@@ -61,9 +61,6 @@ Any party can independently verify the integrity of a published report:
 
 1. Download the PDF from this repository
 2. Compute its SHA3-256 hash:
-   ```
-   python -c "import hashlib; f=open('FILENAME.pdf','rb').read(); print(hashlib.sha3_256(f).hexdigest())"
-   ```
 3. Compare the hash to the value recorded in the Polygon transaction
 4. View the transaction on [PolygonScan](https://polygonscan.com) to confirm the timestamp and data
 
