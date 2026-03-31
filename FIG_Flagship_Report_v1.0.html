@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FishIntel Global — Decision-Time Environmental Reconstruction</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   FISHINTEL GLOBAL — DECISION-TIME ENVIRONMENTAL RECONSTRUCTION
+   Anonymised Public Version — Report v2.1 Final
+   Status: PIPELINE VERIFIED — RECONSTRUCTION DATA POPULATED
+   Finding: Swell + gust forcing regime, not sustained F9-10 local wind
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* No external font dependencies — print-stable stacks only */
+
+:root {
+  /* ── Palette — v2.1 lifted for readability ── */
+  --ink:          #eaecf0;
+  --ink-body:     #d4d8e0;
+  --ink-muted:    #9ba4b4;
+  --ink-dim:      #778192;
+  --navy:         #080f1a;
+  --navy-card:    #0d1520;
+  --navy-surface: #111c2b;
+  --navy-mid:     #1a2d45;
+  --navy-rule:    #243752;
+  --teal:         #3ecfab;
+  --teal-muted:   rgba(62,207,171,0.50);
+  --teal-bg:      rgba(62,207,171,0.08);
+  --teal-border:  rgba(62,207,171,0.28);
+  --amber:        #e6a817;
+  --amber-muted:  rgba(230,168,23,0.55);
+  --amber-bg:     rgba(230,168,23,0.10);
+  --amber-border: rgba(230,168,23,0.30);
+  --red:          #e05252;
+  --red-muted:    rgba(224,82,82,0.55);
+  --red-bg:       rgba(224,82,82,0.10);
+  --red-border:   rgba(224,82,82,0.25);
+  --white:        #ffffff;
+  --pending-bg:   rgba(62,207,171,0.07);
+  --pending-border: rgba(62,207,171,0.24);
+
+  /* ── Typography — print-stable, no external dependencies ── */
+  --font-display: Georgia, 'Times New Roman', 'Palatino Linotype', serif;
+  --font-body:    'Segoe UI', Optima, Candara, 'Helvetica Neue', Helvetica, sans-serif;
+  --font-mono:    Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* ── Layout ── */
+  --max-width:    800px;
+  --page-pad:     2.5rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--ink-body);
+  background: var(--navy);
+  line-height: 1.72;
+}
+
+.report {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COVER
+   ═══════════════════════════════════════════════════════════════════════ */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 0;
+  page-break-after: always;
+}
+
+.cover-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 3.5rem;
+}
+
+.cover-brand__mark {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--teal);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-brand__mark span {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.7rem;
+  color: var(--teal);
+  letter-spacing: -0.02em;
+}
+
+.cover-brand__name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.cover-rule {
+  width: 56px;
+  height: 2px;
+  background: var(--teal);
+  border: none;
+  margin-bottom: 2rem;
+  opacity: 0.7;
+}
+
+.cover-type {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 0.6rem;
+}
+
+.cover-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.85rem;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.cover-subtitle {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--ink-muted);
+  margin-bottom: 3.5rem;
+}
+
+.cover-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 2.5rem;
+  max-width: 460px;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--navy-rule);
+}
+
+.cover-meta dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+}
+
+.cover-meta dd {
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+  margin-bottom: 0.75rem;
+}
+
+.cover-status {
+  margin-top: 3rem;
+  display: inline-block;
+  padding: 0.5rem 1.1rem;
+  border: 1px dashed var(--amber-border);
+  background: var(--amber-bg);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.cover-class {
+  margin-top: 1.5rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--navy-rule);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SECTIONS
+   ═══════════════════════════════════════════════════════════════════════ */
+.section {
+  padding-top: 2.5rem;
+  padding-bottom: 0.5rem;
+  page-break-inside: avoid;
+}
+
+.section--break { page-break-before: always; }
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--teal);
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.7rem;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.section-rule {
+  width: 36px;
+  height: 2px;
+  background: var(--teal);
+  border: none;
+  margin: 0.85rem 0 1.5rem 0;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════ */
+p { margin-bottom: 1.05rem; font-size: 0.96rem; }
+
+p.lead {
+  font-size: 1.05rem;
+  line-height: 1.78;
+  color: var(--ink);
+}
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PIPELINE PENDING — VALUE PLACEHOLDERS
+   ═══════════════════════════════════════════════════════════════════════ */
+.pp {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--teal-muted);
+  border: 1px dashed var(--pending-border);
+  background: var(--pending-bg);
+  padding: 0.15rem 0.55rem;
+  letter-spacing: 0.02em;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+
+/* Pipeline-verified values — populated from reconstruction outputs */
+.pipeline-verified {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--teal);
+  letter-spacing: 0.01em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PIPELINE PENDING — SECTION BANNER
+   ═══════════════════════════════════════════════════════════════════════ */
+.pending-banner {
+  border: 1px dashed var(--pending-border);
+  background: var(--pending-bg);
+  padding: 1rem 1.35rem;
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pending-banner__icon {
+  font-size: 0.85rem;
+  color: var(--teal);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.pending-banner__text {
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--teal-muted);
+  line-height: 1.55;
+}
+
+.pending-banner__text strong {
+  font-weight: 600;
+  color: var(--teal);
+  font-style: normal;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VESSEL CARD
+   ═══════════════════════════════════════════════════════════════════════ */
+.vessel-card {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.4rem 1.6rem;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.vessel-card__header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.12rem;
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.vessel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 2.5rem;
+}
+
+.vessel-grid dt {
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-dim);
+}
+
+.vessel-grid dd {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  margin-bottom: 0.6rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COMPARISON TABLE
+   ═══════════════════════════════════════════════════════════════════════ */
+.comparison {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0 2rem 0;
+  font-size: 0.9rem;
+}
+
+.comparison th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 2px solid var(--navy-rule);
+  background: var(--navy-card);
+}
+
+.comparison th.col-param { color: var(--ink-muted); min-width: 160px; }
+.comparison th.col-narr  { color: var(--ink-muted); }
+.comparison th.col-recon { color: var(--teal); }
+.comparison th.col-note  { color: var(--ink-dim); }
+
+.comparison td {
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid var(--navy-rule);
+  vertical-align: top;
+}
+
+.comparison tr:last-child td { border-bottom: 2px solid var(--navy-rule); }
+
+.comparison td:first-child {
+  font-weight: 500;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.comparison .val-narr {
+  font-weight: 500;
+  color: var(--ink-body);
+}
+
+.comparison .val-narr small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  font-weight: 400;
+  margin-top: 0.1rem;
+}
+
+.comparison .val-recon { /* pipeline data cells */ }
+
+.comparison .note-cell {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TIMELINE
+   ═══════════════════════════════════════════════════════════════════════ */
+.timeline {
+  position: relative;
+  margin: 2rem 0;
+  padding-left: 2.5rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--navy-rule);
+}
+
+.tl-event {
+  position: relative;
+  margin-bottom: 1.6rem;
+  page-break-inside: avoid;
+}
+
+.tl-event::before {
+  content: '';
+  position: absolute;
+  left: -2.5rem;
+  top: 0.4rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--navy-mid);
+  background: var(--navy);
+}
+
+.tl-event--critical::before { background: var(--red); border-color: var(--red); }
+.tl-event--decision::before { background: var(--amber); border-color: var(--amber); }
+.tl-event--anchor::before   { background: var(--teal); border-color: var(--teal); }
+
+.tl-time {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--teal);
+  margin-bottom: 0.1rem;
+}
+
+.tl-label {
+  font-weight: 600;
+  font-size: 0.94rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+.tl-detail {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  line-height: 1.55;
+}
+
+.tl-env {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  padding: 0.2rem 0.55rem;
+  border-left: 2px solid var(--navy-mid);
+  background: var(--navy-card);
+  color: var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DATA CELLS ROW
+   ═══════════════════════════════════════════════════════════════════════ */
+.data-row {
+  display: flex;
+  gap: 0.85rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.data-cell {
+  flex: 1;
+  min-width: 130px;
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1rem;
+  text-align: center;
+}
+
+.data-cell__value {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.data-cell__value .unit {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--ink-dim);
+}
+
+.data-cell__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RISK INDICATOR
+   ═══════════════════════════════════════════════════════════════════════ */
+.risk-box {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.35rem;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+}
+
+.risk-box__score {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.45rem;
+  color: var(--red);
+  min-width: 55px;
+  text-align: center;
+}
+
+.risk-box__text {
+  font-size: 0.88rem;
+  color: var(--red);
+  font-weight: 500;
+}
+
+.risk-box__text span {
+  display: block;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 0.1rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FINDING BOX
+   ═══════════════════════════════════════════════════════════════════════ */
+.finding {
+  background: var(--navy-card);
+  border-left: 4px solid var(--teal);
+  padding: 1.5rem 1.75rem;
+  margin: 2rem 0;
+}
+
+.finding__label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--teal);
+  margin-bottom: 0.7rem;
+}
+
+.finding p {
+  font-size: 0.96rem;
+  line-height: 1.75;
+  color: var(--ink-body);
+  margin-bottom: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CONVERSION CHAIN
+   ═══════════════════════════════════════════════════════════════════════ */
+.conversion-chain {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.15rem 1.4rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 2;
+  color: var(--ink-muted);
+}
+
+.conversion-chain .label {
+  color: var(--ink-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ESCALATION DATA TABLE
+   ═══════════════════════════════════════════════════════════════════════ */
+.escalation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.escalation-table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 2px solid var(--teal-border);
+  background: var(--navy-card);
+  color: var(--ink-muted);
+}
+
+.escalation-table td {
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid var(--navy-rule);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--ink-body);
+}
+
+.escalation-table tr:last-child td {
+  border-bottom: 2px solid var(--navy-rule);
+}
+
+.escalation-table td:first-child {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.escalation-table .label-cell {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.escalation-table .risk-high {
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANALYTICAL NOTE (distinct from amber warning note)
+   ═══════════════════════════════════════════════════════════════════════ */
+.analytical-note {
+  background: var(--navy-card);
+  border-left: 3px solid var(--teal);
+  padding: 1.1rem 1.4rem;
+  margin: 1.5rem 0;
+  page-break-inside: avoid;
+}
+
+.analytical-note__label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  margin-bottom: 0.6rem;
+}
+
+.analytical-note p {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  line-height: 1.65;
+  margin-bottom: 0.7rem;
+}
+
+.analytical-note p:last-child {
+  margin-bottom: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CHART PLACEHOLDER (Environmental Escalation)
+   ═══════════════════════════════════════════════════════════════════════ */
+.chart-frame {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  margin: 1.5rem 0 2rem 0;
+  page-break-inside: avoid;
+}
+
+.chart-frame__header {
+  padding: 0.75rem 1.2rem;
+  border-bottom: 1px solid var(--navy-rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chart-frame__title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+
+.chart-frame__badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--teal-muted);
+  border: 1px dashed var(--pending-border);
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.04em;
+}
+
+.chart-area {
+  position: relative;
+  height: 320px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Grid lines */
+.chart-area__grid {
+  position: absolute;
+  inset: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.chart-area__gridline {
+  border-top: 1px solid var(--navy-rule);
+  position: relative;
+}
+
+.chart-area__gridline::before {
+  content: attr(data-label);
+  position: absolute;
+  left: -0.2rem;
+  top: -0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+/* Placeholder overlay */
+.chart-area__pending {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(8,15,26,0.55);
+  z-index: 2;
+}
+
+.chart-area__pending-icon {
+  width: 40px;
+  height: 40px;
+  border: 2px dashed var(--teal-muted);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--teal-muted);
+}
+
+.chart-area__pending-text {
+  font-size: 0.84rem;
+  color: var(--teal-muted);
+  font-style: italic;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* Event markers along x-axis */
+.chart-events {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  border-top: 1px solid var(--navy-rule);
+}
+
+.chart-event {
+  text-align: center;
+  padding: 0.6rem 0.25rem;
+  flex: 1;
+  position: relative;
+}
+
+.chart-event::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 8px;
+  background: var(--navy-rule);
+  transform: translateX(-50%);
+}
+
+.chart-event__time {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  display: block;
+}
+
+.chart-event__label {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+  display: block;
+  margin-top: 0.1rem;
+  line-height: 1.3;
+}
+
+.chart-event--critical .chart-event__time { color: var(--red); }
+.chart-event--decision .chart-event__time { color: var(--amber); }
+
+/* Legend */
+.chart-legend {
+  display: flex;
+  gap: 1.2rem;
+  padding: 0.65rem 1.2rem;
+  border-top: 1px solid var(--navy-rule);
+  flex-wrap: wrap;
+}
+
+.chart-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+}
+
+.chart-legend__swatch {
+  width: 16px;
+  height: 3px;
+  border-radius: 1px;
+}
+
+.chart-legend__swatch--wind     { background: var(--teal); }
+.chart-legend__swatch--gust     { background: var(--red); border-top: 1px dashed var(--red); height: 0; padding-top: 3px; }
+.chart-legend__swatch--wave     { background: var(--amber); }
+.chart-legend__swatch--pressure { background: var(--ink-muted); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FORESEEABILITY TEST BOX
+   ═══════════════════════════════════════════════════════════════════════ */
+.foresee-test {
+  background: var(--navy-card);
+  border: 1px solid var(--teal-border);
+  padding: 1.4rem 1.6rem;
+  margin: 2rem 0;
+  page-break-inside: avoid;
+}
+
+.foresee-test__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.foresee-test__icon {
+  font-size: 0.85rem;
+  color: var(--teal);
+}
+
+.foresee-test__title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+}
+
+.foresee-test__body {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  line-height: 1.7;
+}
+
+.foresee-test__body p {
+  margin-bottom: 0.7rem;
+  font-size: 0.92rem;
+}
+
+.foresee-test__body p:last-child {
+  margin-bottom: 0;
+}
+
+.foresee-test__criteria {
+  margin: 0.75rem 0;
+  padding-left: 1.2rem;
+}
+
+.foresee-test__criteria li {
+  font-size: 0.9rem;
+  color: var(--ink-body);
+  margin-bottom: 0.4rem;
+  line-height: 1.55;
+  list-style-type: none;
+  position: relative;
+}
+
+.foresee-test__criteria li::before {
+  content: '—';
+  position: absolute;
+  left: -1.1rem;
+  color: var(--teal-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   T_IRR / DECISION WINDOW
+   ═══════════════════════════════════════════════════════════════════════ */
+.tirr-card {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.4rem 1.6rem;
+  margin: 1.5rem 0;
+}
+
+.tirr-card__header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.12rem;
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.tirr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 2.5rem;
+}
+
+.tirr-grid dt {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-dim);
+}
+
+.tirr-grid dd {
+  font-size: 0.92rem;
+  color: var(--ink-body);
+  margin-bottom: 0.65rem;
+}
+
+/* Regime badge */
+.regime-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+}
+
+.regime-badge--pending {
+  color: var(--teal-muted);
+  border: 1px dashed var(--pending-border);
+  background: var(--pending-bg);
+}
+
+/* Window bar */
+.window-bar {
+  margin: 1.5rem 0;
+}
+
+.window-bar__track {
+  height: 28px;
+  background: var(--navy-surface);
+  border: 1px solid var(--navy-rule);
+  position: relative;
+  display: flex;
+}
+
+.window-bar__segment {
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.window-bar__segment--open {
+  background: rgba(62,207,171,0.15);
+  color: var(--teal);
+  border-right: 1px solid var(--teal-muted);
+}
+
+.window-bar__segment--narrowing {
+  background: rgba(230,168,23,0.12);
+  color: var(--amber);
+  border-right: 1px solid var(--amber-muted);
+}
+
+.window-bar__segment--closed {
+  background: rgba(224,82,82,0.1);
+  color: var(--red-muted);
+}
+
+.window-bar__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   EVIDENCE INTEGRITY BLOCK
+   ═══════════════════════════════════════════════════════════════════════ */
+.integrity {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-rule);
+  padding: 1.75rem;
+  margin: 3rem 0 2rem 0;
+  page-break-inside: avoid;
+}
+
+.integrity__title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-dim);
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--navy-rule);
+}
+
+.integrity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 2rem;
+}
+
+.integrity-grid dt {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-dim);
+  font-weight: 500;
+}
+
+.integrity-grid dd {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-bottom: 0.65rem;
+  word-break: break-all;
+}
+
+.integrity-grid dd.full-span { grid-column: 1 / -1; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANNOTATION / NOTE
+   ═══════════════════════════════════════════════════════════════════════ */
+.note {
+  background: var(--amber-bg);
+  border-left: 3px solid var(--amber-border);
+  padding: 0.8rem 1.1rem;
+  margin: 1.5rem 0;
+  font-size: 0.85rem;
+  color: var(--amber);
+  line-height: 1.6;
+}
+
+.note strong { color: var(--amber); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════════════ */
+.report-footer {
+  text-align: center;
+  padding: 2.5rem 0 4rem 0;
+  font-size: 0.74rem;
+  color: var(--ink-dim);
+  border-top: 1px solid var(--navy-rule);
+}
+
+.report-footer strong { color: var(--ink-muted); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════════════════════════════════════ */
+@media print {
+  body { background: #0a1018 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .report { max-width: 100%; padding: 0 1.5cm; }
+  .cover { min-height: auto; padding: 3cm 0; }
+  .section { padding-top: 1.5rem; }
+  .integrity, .vessel-card, .data-cell, .finding, .risk-box, .comparison th, .comparison td,
+  .pending-banner, .pp, .tl-env, .conversion-chain, .cover-status,
+  .chart-frame, .chart-area, .chart-area__pending, .chart-events, .chart-legend,
+  .chart-area__gridline, .window-bar__segment, .window-bar__track, .tirr-card,
+  .regime-badge, .chart-event, .foresee-test {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@page { size: A4; margin: 1.8cm 1.5cm; }
+</style>
+</head>
+<body>
+
+<div class="report">
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     COVER PAGE
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="cover" id="cover">
+
+  <div class="cover-brand">
+    <div class="cover-brand__mark"><span>FI</span></div>
+    <div class="cover-brand__name">FishIntel Global</div>
+  </div>
+
+  <hr class="cover-rule">
+
+  <div class="cover-type">Environmental Reconstruction Report</div>
+  <h1 class="cover-title">Decision-Time Environmental Reconstruction</h1>
+  <div class="cover-subtitle">Anchorage Failure During Forecast Storm Conditions</div>
+
+  <dl class="cover-meta">
+    <dt>Incident Window</dt>
+    <dd>Winter storm period</dd>
+    <dt>Report Reference</dt>
+    <dd>FIG-2025-001</dd>
+    <dt>Vessel Category</dt>
+    <dd>Bulk carrier, in ballast</dd>
+    <dt>Report Version</dt>
+    <dd>v1.0</dd>
+    <dt>Operational Context</dt>
+    <dd>UK coastal lee shore anchorage</dd>
+    <dt>Classification</dt>
+    <dd>Public — Anonymised</dd>
+  </dl>
+
+  <div class="cover-status">Pipeline verified — Reconstruction data populated</div>
+
+  <div class="cover-class">Public version — Anonymised case study — Not protectively marked</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     01 — EXECUTIVE SUMMARY
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="executive-summary">
+  <span class="section-num">01</span>
+  <h2 class="section-title">Executive Summary</h2>
+  <hr class="section-rule">
+
+  <p><strong>Incident type:</strong> Grounding following anchor drag. A foreign-registered bulk carrier, anchored in ballast at a UK coastal anchorage, dragged its anchor during a severe winter storm and grounded on a public beach. Successfully refloated on the next high water. No injuries, no pollution.</p>
+
+  <p><strong>Core question:</strong> What environmental conditions were objectively knowable at the time the decision was made to remain at anchor on a lee shore overnight, and at what point did those conditions make the vessel's position untenable?</p>
+
+  <p><strong>Method:</strong> ERA5 atmospheric reanalysis data was extracted at the anchorage coordinates across a three-point time window (03:00–05:25 UTC) and processed through the FishIntel deterministic reconstruction pipeline. The reconstruction quantifies sustained wind, gust speed, significant wave height, atmospheric pressure, and visibility at each extraction point.</p>
+
+  <p><strong>Key result:</strong> The vessel was in a HIGH-risk environmental regime before the anchor began to drag. ERA5 reconstruction shows sustained 10 m winds of between 25.3 and 27.0 knots (Beaufort force 6–7), gusts of 41.6–44.8 knots, and significant wave height of 3.8–4.1 metres across the incident window. The narrative description of "Force 9–10" appears to reflect the combined severity of locally generated wind waves and remotely generated swell propagating into the anchorage from the open English Channel — not sustained local wind at the 10 m reference height. The dominant forcing mechanisms for anchor drag were heavy swell loading on a vessel in ballast combined with severe gust intensity, rather than sustained storm-force local wind alone.</p>
+
+  <p><strong>Analytical finding:</strong> Environmental reconstruction separates local wind forcing from remotely generated swell, revealing that the conventional Beaufort estimate in the narrative account conflated two distinct physical mechanisms. The hazardous anchoring regime was already established by 03:00 UTC — more than 90 minutes before the anchor began to drag.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     02 — INCIDENT OVERVIEW
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="incident-overview">
+  <span class="section-num">02</span>
+  <h2 class="section-title">Incident Overview</h2>
+  <hr class="section-rule">
+
+  <div class="vessel-card">
+    <div class="vessel-card__header">Vessel Profile</div>
+    <dl class="vessel-grid">
+      <dt>Type</dt>
+      <dd>Bulk carrier</dd>
+      <dt>Flag</dt>
+      <dd>Foreign-registered</dd>
+      <dt>Length Overall</dt>
+      <dd>~180 m</dd>
+      <dt>Gross Tonnage</dt>
+      <dd>~16,000</dd>
+      <dt>Year of Build</dt>
+      <dd>Early 1980s</dd>
+      <dt>Cargo Condition</dt>
+      <dd>In ballast</dd>
+      <dt>Propulsion</dt>
+      <dd>Direct drive, single fixed-pitch propeller, no bow thruster</dd>
+      <dt>Crew</dt>
+      <dd>18</dd>
+      <dt>Anchors</dt>
+      <dd>Two, AC14 type. Port: 11 shackles. Starboard: 10 shackles.</dd>
+      <dt>P&amp;I Insurance</dt>
+      <dd>Not in force at time of incident</dd>
+    </dl>
+  </div>
+
+  <p>The vessel had sailed from a European port following a lengthy port state control detention. Unable to take bunkers before departure due to unpaid debts, she was ordered to proceed to North Africa for refuelling but had insufficient fuel for the passage. After several days alternating between anchoring and loitering at slow speed off the south-west coast of England, the vessel was authorised to take bunkers at a local port.</p>
+
+  <p>She anchored in the bay approximately 1 nautical mile off a public beach, in a charted depth of 17 metres, using the port anchor with 7 shackles of cable (scope ratio approximately 9:1 at high water). A delivery of marine diesel was completed, but a subsequent lube oil delivery was not fulfilled. The vessel was unable to embark on her intended passage.</p>
+
+  <p>On the evening before the grounding, the master was aware that the weather forecast predicted southerly winds up to Beaufort force 8. He wrote in his night orders that the main engine should be at immediate readiness for wind speeds exceeding 16–17 m/s (31–33 knots). He discussed the risk of the vessel dragging anchor with the bridge watchkeepers.</p>
+
+  <p>By 0400 the following morning, the wind was gusting over 52 knots with a 4–5 metre swell. At 0425, the anchor began to drag. The master was called, began heaving the anchor, and attempted to proceed to sea. The anchor appeared to be fouled by a substantial length of chain, which distracted the crew and cost critical time. The vessel fell beam-to the wind, making over 2 knots leeway towards the shore. Despite full engine power and helm, the master was unable to turn the vessel into the wind. She grounded at 0525.</p>
+
+  <p>Local harbour resources coordinated the refloating operation. With the weather moderating, the vessel was pulled off the beach by harbour tugs at 1415 the same day, assisted by her own main engine. An underwater survey subsequently revealed hull plate deformation, breached tanks, and partial bilge keel detachment. There were no injuries and no pollution.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     03 — ENVIRONMENTAL ESCALATION TIMELINE
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="escalation-timeline">
+  <span class="section-num">03</span>
+  <h2 class="section-title">Environmental Escalation Timeline</h2>
+  <hr class="section-rule">
+
+  <p>ERA5 reanalysis data was extracted at the anchorage coordinates across three timestamps spanning the critical period from storm escalation through anchor drag to grounding. The following table presents the reconstructed conditions at each extraction point.</p>
+
+  <table class="escalation-table">
+    <thead>
+      <tr>
+        <th>Timestamp (UTC)</th>
+        <th>Event</th>
+        <th>Sustained Wind</th>
+        <th>Gusts</th>
+        <th>Sig. Wave Height</th>
+        <th>Risk Regime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>03:00</td>
+        <td class="label-cell">Storm escalation</td>
+        <td><span class="pipeline-verified" data-field="esc_0300_wind_kt">25.3 kt</span></td>
+        <td><span class="pipeline-verified" data-field="esc_0300_gust_kt">41.6 kt</span></td>
+        <td><span class="pipeline-verified" data-field="esc_0300_wave_m">3.8 m</span></td>
+        <td class="risk-high">HIGH</td>
+      </tr>
+      <tr>
+        <td>04:00</td>
+        <td class="label-cell">Vessel yawing / anchor drag imminent</td>
+        <td><span class="pipeline-verified" data-field="esc_0400_wind_kt">26.2 kt</span></td>
+        <td><span class="pipeline-verified" data-field="esc_0400_gust_kt">43.7 kt</span></td>
+        <td><span class="pipeline-verified" data-field="esc_0400_wave_m">4.0 m</span></td>
+        <td class="risk-high">HIGH</td>
+      </tr>
+      <tr>
+        <td>05:25</td>
+        <td class="label-cell">Grounding</td>
+        <td><span class="pipeline-verified" data-field="esc_0525_wind_kt">27.0 kt</span></td>
+        <td><span class="pipeline-verified" data-field="esc_0525_gust_kt">44.8 kt</span></td>
+        <td>4.14 m</td>
+        <td class="risk-high">HIGH</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Interpretation</div>
+    <p>The vessel did not enter a dangerous regime at the moment of grounding. The hazardous environmental state already existed at 03:00 UTC — more than 90 minutes before the anchor began to drag at 04:25. Conditions escalated continuously but moderately across the three-hour window: sustained wind increased by 1.7 knots, gusts by 3.2 knots, and significant wave height by 0.3 metres.</p>
+    <p>This profile is consistent with a deepening synoptic-scale storm system, not a sudden localised squall. The conditions that caused the anchor to drag were foreseeable from the environmental state that existed well before the event.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     04 — NARRATIVE WEATHER DESCRIPTION
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="narrative-conditions">
+  <span class="section-num">04</span>
+  <h2 class="section-title">Narrative Weather Description</h2>
+  <hr class="section-rule">
+
+  <p>The following environmental conditions were described in the original accident investigation narrative. These represent the qualitative and semi-quantitative descriptions available in the published account.</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Parameter</th>
+        <th class="col-narr">Narrative Description</th>
+        <th class="col-note">Observations</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Wind (sustained)</td>
+        <td class="val-narr">Southerly, Beaufort force 9–10 <small>Equivalent to 47–55 knots</small></td>
+        <td class="note-cell">Described at time of incident. No hourly progression provided.</td>
+      </tr>
+      <tr>
+        <td>Wind (gusts)</td>
+        <td class="val-narr">"gusting over 52 knots" <small>Reported by 0400</small></td>
+        <td class="note-cell">Single threshold. No peak gust value stated.</td>
+      </tr>
+      <tr>
+        <td>Wind direction</td>
+        <td class="val-narr">Southerly</td>
+        <td class="note-cell">Cardinal direction only. No bearing given.</td>
+      </tr>
+      <tr>
+        <td>Sea / swell</td>
+        <td class="val-narr">4–5 m swell</td>
+        <td class="note-cell">Range given. No wave period or direction stated.</td>
+      </tr>
+      <tr>
+        <td>Forecast (evening before)</td>
+        <td class="val-narr">Southerly up to Beaufort force 8 <small>34–40 knots</small></td>
+        <td class="note-cell">Forecast available to master. Conditions exceeded this forecast.</td>
+      </tr>
+      <tr>
+        <td>Atmospheric pressure</td>
+        <td class="val-narr">Not stated</td>
+        <td class="note-cell">No barometric data in narrative account.</td>
+      </tr>
+      <tr>
+        <td>Air temperature</td>
+        <td class="val-narr">Not stated</td>
+        <td class="note-cell">—</td>
+      </tr>
+      <tr>
+        <td>Visibility</td>
+        <td class="val-narr">Not stated</td>
+        <td class="note-cell">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Analytical note:</strong> The narrative account provides a description of conditions at the time of the incident but does not quantify the environmental progression in the hours before the anchor dragged. Several parameters relevant to the decision environment — atmospheric pressure, temperature, visibility — are absent from the narrative.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     05 — ENVIRONMENTAL RECONSTRUCTION
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="environmental-reconstruction">
+  <span class="section-num">05</span>
+  <h2 class="section-title">Environmental Reconstruction</h2>
+  <hr class="section-rule">
+
+  <p>The following table compares the environmental conditions described in the narrative account with the values reconstructed by FishIntel using ECMWF ERA5 atmospheric reanalysis data at the anchorage position (05:25 UTC extraction). All reconstructed values are produced by the deterministic FishIntel pipeline. All reconstruction values are derived from verified FishIntel pipeline outputs.</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Parameter</th>
+        <th class="col-narr">Narrative Description</th>
+        <th class="col-recon">FishIntel Reconstruction</th>
+        <th class="col-note">Assessment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Wind speed (sustained)</td>
+        <td class="val-narr">Beaufort F9–10 (47–55 kt)</td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_wind_speed_kt">27.0 kt</span></td>
+        <td class="note-cell">Lower than narrative Beaufort estimate. Likely reflects separation between local 10 m wind and swell-driven sea-state severity. See analytical note below.</td>
+      </tr>
+      <tr>
+        <td>Wind gusts</td>
+        <td class="val-narr">"gusting over 52 knots"</td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_gust_speed_kt">44.8 kt</span></td>
+        <td class="note-cell">Broadly consistent with severe gust loading. ERA5 gust at 10 m is within ~15% of bridge-height observation. Height correction partially closes remaining gap.</td>
+      </tr>
+      <tr>
+        <td>Wind direction</td>
+        <td class="val-narr">Southerly</td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_wind_direction_deg">179°</span></td>
+        <td class="note-cell">Confirmed due south. Consistent with lee shore exposure at anchorage.</td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td class="val-narr">4–5 m swell</td>
+        <td class="val-recon">4.14 m</td>
+        <td class="note-cell">Strong alignment with the narrative 4–5 m swell. Validates that ERA5 captures the same storm event.</td>
+      </tr>
+      <tr>
+        <td>Atmospheric pressure</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_pressure_hpa">1004.4 hPa</span></td>
+        <td class="note-cell">Below-average pressure consistent with active low. FishIntel adds quantification absent from narrative.</td>
+      </tr>
+      <tr>
+        <td>Air temperature</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_air_temp_c">11.8 °C</span></td>
+        <td class="note-cell">Mild for winter; consistent with maritime air mass from the south.</td>
+      </tr>
+      <tr>
+        <td>Dewpoint spread</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_dewpoint_spread_c">3.2 °C</span></td>
+        <td class="note-cell">Indicator of precipitation / visibility conditions.</td>
+      </tr>
+      <tr>
+        <td>Visibility classification</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_visibility_class">moderate</span></td>
+        <td class="note-cell">Derived from dewpoint spread.</td>
+      </tr>
+      <tr>
+        <td>Wind vs tide</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_wind_vs_tide">with</span></td>
+        <td class="note-cell">Interaction classification.</td>
+      </tr>
+      <tr>
+        <td>Wind shear (10 m – 100 m)</td>
+        <td class="val-narr"><em>Not stated</em></td>
+        <td class="val-recon"><span class="pipeline-verified" data-field="recon_wind_shear_kt">12.7 kt</span></td>
+        <td class="note-cell">Significant shear. Relevant to high-windage vessel in ballast — wind loading at bridge height (~25–30 m) materially exceeds 10 m reference.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Summary data cells -->
+  <div class="data-row">
+    <div class="data-cell">
+      <div class="data-cell__value">27.0 <span class="unit">kt</span></div>
+      <div class="data-cell__label">Sustained Wind (10 m)</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value">44.8 <span class="unit">kt</span></div>
+      <div class="data-cell__label">Gust Speed</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value">4.14 <span class="unit">m</span></div>
+      <div class="data-cell__label">Sig. Wave Height</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value">1004.4 <span class="unit">hPa</span></div>
+      <div class="data-cell__label">Pressure MSL</div>
+    </div>
+  </div>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Analytical Note — Sustained Wind vs Sea-State Severity</div>
+    <p>The narrative account describes conditions as "Beaufort force 9 to 10" (47–55 knots sustained). ERA5 reconstruction shows 10 m sustained wind of 27.0 knots (Beaufort force 6–7) at the anchorage position. These are not equivalent measurements and the difference is analytically significant.</p>
+    <p>ERA5 reports the 10-metre neutral-stability wind speed averaged over a ~31 km grid cell. The MAIB Beaufort classification is derived from sea-state observation at the vessel's position — a method that conflates locally generated wind waves with remotely generated swell. In this case, a 4+ metre swell was propagating into the anchorage from the open English Channel, generated by stronger winds over a long fetch offshore. The sea state at the anchorage therefore appeared consistent with Force 9–10 conditions, even though the local sustained wind at 10 m was materially lower.</p>
+    <p>This distinction matters operationally. The dominant forcing mechanisms for anchor drag in this case were heavy swell loading on a vessel in ballast (high windage area, large heaving motion in 4 m swell) combined with severe gust loading (45 kt at 10 m, likely exceeding 50 kt at bridge height). Sustained local Force 9–10 wind was not required to produce the observed outcome.</p>
+  </div>
+
+  <div class="conversion-chain">
+    <span class="label">Unit Conversion Chain — Wind Speed</span>
+    ERA5 source: <span class="pipeline-verified" data-field="raw_wind_speed_10m_ms">13.875</span> m/s
+    → × (3600 / 1852) = <span class="pipeline-verified" data-field="recon_wind_speed_kt">27.0 kt</span>
+    <span class="label" style="margin-top:0.5rem">Unit Conversion Chain — Pressure</span>
+    ERA5 source: <span class="pipeline-verified" data-field="raw_pressure_msl_pa">100438.8</span> Pa
+    → ÷ 100 = <span class="pipeline-verified" data-field="recon_pressure_hpa">1004.4 hPa</span>
+    <span class="label" style="margin-top:0.5rem">Unit Conversion Chain — Temperature</span>
+    ERA5 source: <span class="pipeline-verified" data-field="raw_air_temperature_2m_k">284.956</span> K
+    → − 273.15 = <span class="pipeline-verified" data-field="recon_air_temp_c">11.8 °C</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     06 — DECISION-TIME ENVIRONMENT (TIMELINE)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="decision-timeline">
+  <span class="section-num">06</span>
+  <h2 class="section-title">Decision-Time Environment</h2>
+  <hr class="section-rule">
+
+  <p>The following chronology presents the sequence of events from the vessel's arrival at anchor through the grounding, with environmental context at each decision gate. Markers indicate points where the master had the opportunity to alter the outcome.</p>
+
+
+
+  <div class="timeline">
+
+    <div class="tl-event tl-event--anchor">
+      <div class="tl-time">Day 1 — 1700 UTC</div>
+      <div class="tl-label">Vessel anchored in the bay</div>
+      <div class="tl-detail">Port anchor deployed with 7 shackles of cable in 17 m charted depth, approximately 1 nm from the beach. Marine diesel delivered. No spare lube oil on board. Scope ratio ~9:1 at high water (21 m).</div>
+    </div>
+
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">Day 3 — Evening</div>
+      <div class="tl-label">Decision: remain at anchor overnight</div>
+      <div class="tl-detail">Master aware of forecast: southerly winds up to Beaufort force 8 (34–40 kt). Lube oil delivery expected but not completed. Night orders issued: engine readiness required at wind speeds &gt;16–17 m/s (31–33 kt). Anchor drag risk discussed with bridge watchkeepers.</div>
+      <div class="tl-env">Forecast: S'ly F8 (34–40 kt) | Decision window: OPEN</div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-time">Day 3 — 2100 UTC</div>
+      <div class="tl-label">Second officer takes bridge watch</div>
+      <div class="tl-detail">Wind speed increasing. Engine placed at immediate readiness on second officer's orders.</div>
+      <div class="tl-env">Conditions escalating — wind increasing, gusts approaching 40 kt</div>
+    </div>
+
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">Day 4 — 0400 UTC</div>
+      <div class="tl-label">Chief officer takes bridge watch</div>
+      <div class="tl-detail">Southerly wind gusting over 52 knots. Swell 4–5 metres. Vessel yawing at anchor.</div>
+      <div class="tl-env">Conditions exceed forecast — 26.2 kt sustained, 43.7 kt gusts, 4.0 m SWH | Decision window: NARROWING</div>
+    </div>
+
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">Day 4 — 0425 UTC</div>
+      <div class="tl-label">Anchor starts to drag</div>
+      <div class="tl-detail">Anchor watch alarm sounds on electronic chart system. SOG 1.4 kt to the north. Chief officer calls master, alerts engine room, announces to crew.</div>
+      <div class="tl-env">HDG 186° | SOG 0.4 kt | COG 032° | 26.2 kt sustained, 43.7 kt gusts</div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-time">Day 4 — 0438 UTC</div>
+      <div class="tl-label">Heaving anchor</div>
+      <div class="tl-detail">Bosun begins heaving the anchor. Master uses engine and rudder to take weight off the cable.</div>
+      <div class="tl-env">HDG 208° | SOG 1.5 kt | COG 319°</div>
+    </div>
+
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">Day 4 — ~0500 UTC</div>
+      <div class="tl-label">Anchor aweigh — fouled by chain</div>
+      <div class="tl-detail">Anchor broke the surface fouled by a substantial length of chain across its flukes. Master stopped manoeuvring, concerned about damage to anchor, windlass, or propeller. Vessel fell beam-to the wind on a westerly heading.</div>
+      <div class="tl-env">HDG 216° | SOG 0.6 kt | COG 289° | Decision window: CLOSING</div>
+    </div>
+
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">Day 4 — 0510 UTC</div>
+      <div class="tl-label">Final manoeuvring attempt</div>
+      <div class="tl-detail">Vessel approximately 6 cables off the beach, making over 2 kt leeway to the north. Full port rudder and full ahead applied. Master assessed vessel would not clear the headland 0.5 nm to the west.</div>
+      <div class="tl-env">HDG 274° | SOG 2.1 kt | COG 334° | 27.0 kt sustained, 44.8 kt gusts</div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-time">Day 4 — 0515 UTC</div>
+      <div class="tl-label">Engine stopped</div>
+      <div class="tl-detail">Master assessed grounding was inevitable and stopped engine to protect the propeller for future refloating. Ordered port anchor let go — anchor did not hold.</div>
+      <div class="tl-env">HDG 254° | SOG 1.1 kt | COG 342°</div>
+    </div>
+
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">Day 4 — 0525 UTC</div>
+      <div class="tl-label">Grounding</div>
+      <div class="tl-detail">Vessel grounded on the beach. Settled with 5° port list. Stern on sand, bow across rocky ledge. Master informed port and vessel operator.</div>
+      <div class="tl-env">HDG 240° | SOG 0.8 kt | COG 333° | Decision window: CLOSED</div>
+    </div>
+
+    <div class="tl-event tl-event--anchor">
+      <div class="tl-time">Day 4 — 1415 UTC</div>
+      <div class="tl-label">Refloated</div>
+      <div class="tl-detail">Vessel refloated by local harbour tugs and own main engine as sea and swell moderated. Anchored 1 nm south of the headland by starboard anchor.</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     07 — ENVIRONMENTAL ESCALATION — HOURLY PROFILE
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="environmental-escalation">
+  <span class="section-num">07</span>
+  <h2 class="section-title">Environmental Escalation — Verified Profile</h2>
+  <hr class="section-rule">
+
+  <p>The following graphic presents the verified three-point environmental escalation profile across the incident window. Each data point is derived from the FishIntel reconstruction pipeline at the coordinates and timestamp shown.</p>
+
+  <div class="chart-frame">
+    <div class="chart-frame__header">
+      <div class="chart-frame__title">Environmental Conditions — Three-Point Extraction</div>
+      <div class="chart-frame__badge" style="color:var(--teal);border-color:var(--teal-border);">VERIFIED DATA</div>
+    </div>
+
+    <!-- CSS-only bar chart using verified values -->
+    <div style="padding:1.5rem 1.5rem 0.5rem 3.5rem;position:relative;">
+      <!-- Y-axis labels -->
+      <div style="position:absolute;left:0;top:1.5rem;bottom:0.5rem;width:3rem;display:flex;flex-direction:column;justify-content:space-between;text-align:right;padding-right:0.5rem;">
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">50 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">40 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">30 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">20 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">10 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">0</span>
+      </div>
+
+      <!-- Grid lines -->
+      <div style="position:absolute;left:3.5rem;right:1.5rem;top:1.5rem;bottom:0.5rem;display:flex;flex-direction:column;justify-content:space-between;">
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+        <div style="border-top:1px solid var(--navy-rule);"></div>
+      </div>
+
+      <!-- Bar groups: 3 timestamps × 3 series (wind, gust, wave) -->
+      <div style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;position:relative;z-index:1;">
+
+        <!-- 03:00 UTC -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <!-- Wind 25.3 kt = 50.6% of 50 -->
+            <div style="width:22px;height:50.6%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">25.3</span>
+            </div>
+            <!-- Gust 41.6 kt = 83.2% of 50 -->
+            <div style="width:22px;height:83.2%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">41.6</span>
+            </div>
+            <!-- Wave 3.8 m shown as scaled bar (3.8/5 = 76% scaled to wave range) -->
+            <div style="width:22px;height:76%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">3.8m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-muted);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">03:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Storm<br>escalation</div>
+        </div>
+
+        <!-- 04:00 UTC -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <!-- Wind 26.2 kt = 52.4% -->
+            <div style="width:22px;height:52.4%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">26.2</span>
+            </div>
+            <!-- Gust 43.7 kt = 87.4% -->
+            <div style="width:22px;height:87.4%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">43.7</span>
+            </div>
+            <!-- Wave 4.0 m = 80% -->
+            <div style="width:22px;height:80%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">4.0m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--amber);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">04:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Vessel yawing<br>Anchor drag imminent</div>
+        </div>
+
+        <!-- 05:25 UTC -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <!-- Wind 27.0 kt = 54% -->
+            <div style="width:22px;height:54%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">27.0</span>
+            </div>
+            <!-- Gust 44.8 kt = 89.6% -->
+            <div style="width:22px;height:89.6%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">44.8</span>
+            </div>
+            <!-- Wave 4.1 m = 82% -->
+            <div style="width:22px;height:82%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">4.1m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--red);font-weight:600;padding-top:0.3rem;border-top:2px solid var(--red);width:100%;text-align:center;">05:25</div>
+          <div style="font-size:0.65rem;color:var(--red);text-align:center;font-weight:500;">GROUNDING</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="chart-legend">
+      <div class="chart-legend__item">
+        <div class="chart-legend__swatch chart-legend__swatch--wind"></div>
+        Sustained wind (kt) — ERA5 10 m
+      </div>
+      <div class="chart-legend__item">
+        <div class="chart-legend__swatch chart-legend__swatch--gust"></div>
+        Gusts (kt) — ERA5 instantaneous 10 m
+      </div>
+      <div class="chart-legend__item">
+        <div class="chart-legend__swatch chart-legend__swatch--wave"></div>
+        Sig. wave height (m, scaled)
+      </div>
+    </div>
+  </div>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Interpretation</div>
+    <p>The three-point extraction shows a slowly escalating environmental regime, not a sudden onset event. All three extraction points classify as HIGH risk. The conditions that caused the anchor to drag at 04:25 were already present at 03:00 — more than 90 minutes earlier. Across the extraction window, sustained wind increased by 1.7 knots and gusts by 3.2 knots.</p>
+    <p>Gusts consistently exceeded the master's night-order threshold of 31–33 knots by a margin of 10–14 knots across the entire window. The forecast available to the master (southerly F8, 34–40 kt) understated the gust intensity that materialised.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     08 — DECISION WINDOW / T_IRR ANALYSIS
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="tirr-analysis">
+  <span class="section-num">08</span>
+  <h2 class="section-title">Decision Window Assessment <span style="font-size:0.65em;font-weight:400;color:var(--ink-muted)">(Preliminary)</span></h2>
+  <hr class="section-rule">
+
+  <p>FishIntel's Time-to-Irreversibility (T<sub>irr</sub>) framework identifies when an operational situation becomes irreversible — the point beyond which no reasonable intervention by the vessel's crew can change the outcome. This preliminary assessment uses the three-point environmental extraction to establish the regime classification across the incident window.</p>
+
+  <p>The vessel was in a HIGH-risk environmental regime at all three extraction points (03:00, 04:00, 05:25 UTC). The hazardous state pre-dated the anchor drag event by at least 90 minutes.</p>
+
+  <div class="tirr-card">
+    <div class="tirr-card__header">Decision Window Findings (Preliminary)</div>
+    <dl class="tirr-grid">
+      <dt>Risk Regime</dt>
+      <dd><span style="font-family:var(--font-mono);font-size:0.82rem;font-weight:600;color:var(--red);">HIGH at all verified extraction points (03:00, 04:00, 05:25 UTC)</span></dd>
+      <dt>Indicative Warning Window</dt>
+      <dd>Hazardous anchoring regime established at least 90 minutes before anchor drag</dd>
+      <dt>Indicative Loss of Reversibility</dt>
+      <dd>Operational recovery appears to have narrowed rapidly after anchor drag began at 04:25 UTC, with the vessel beam-to the wind and significant leeway developing by approximately 05:10</dd>
+      <dt>Critical Decision Gate</dt>
+      <dd>Evening of Day 3 — decision to remain at anchor on a lee shore with storm forecast</dd>
+      <dt>Available Alternative</dt>
+      <dd>Proceed to sea before storm escalation, while the decision window remained open</dd>
+    </dl>
+    <div style="margin-top:0.8rem;padding-top:0.6rem;border-top:1px solid var(--navy-rule);font-size:0.78rem;color:var(--ink-dim);font-style:italic;">
+      Precise irreversibility timing and regime-transition thresholds are reserved for full T<sub>irr</sub> computation with vessel-specific CaseContext parameters. The findings above are derived from the verified environmental reconstruction and the incident chronology.
+    </div>
+  </div>
+
+  <p>The T<sub>irr</sub> framework classifies operational situations into three regimes:</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Regime</th>
+        <th class="col-narr">Classification</th>
+        <th class="col-note">Meaning</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Regime 1</td>
+        <td class="val-narr">Reversible</td>
+        <td class="note-cell">Conditions permit effective intervention. The decision window is open. Corrective action remains available and viable.</td>
+      </tr>
+      <tr>
+        <td>Regime 2</td>
+        <td class="val-narr">Conditionally reversible</td>
+        <td class="note-cell">Intervention is possible but constrained. The window is narrowing. Success depends on immediate action and favourable conditions.</td>
+      </tr>
+      <tr>
+        <td>Regime 3</td>
+        <td class="val-narr">Irreversible</td>
+        <td class="note-cell">No reasonable intervention can alter the outcome. The situation has passed T<sub>irr</sub>. The operational decision that could have changed the outcome had to be taken earlier.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Decision window visualisation -->
+  <div class="window-bar">
+    <div class="window-bar__track">
+      <div class="window-bar__segment window-bar__segment--open" style="flex:4;">
+        OPEN
+      </div>
+      <div class="window-bar__segment window-bar__segment--narrowing" style="flex:2;">
+        NARROWING
+      </div>
+      <div class="window-bar__segment window-bar__segment--closed" style="flex:1.5;">
+        CLOSED
+      </div>
+    </div>
+    <div class="window-bar__labels">
+      <span>Day 3 evening — Decision to remain at anchor</span>
+      <span>0400 — Conditions exceed forecast</span>
+      <span>0510 — Grounding inevitable</span>
+    </div>
+  </div>
+
+  <p>Based on the narrative evidence, this case presents a three-phase decision window. On the evening before the grounding, the decision to remain at anchor represented a point where the situation was reversible — the vessel could have proceeded to sea despite its operational constraints. By 0400, when conditions exceeded the forecast available to the master, the window was narrowing but action remained possible. By approximately 0510, with the vessel beam-to the wind making over 2 knots leeway at 6 cables from the beach, the outcome had become inevitable regardless of crew action.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     09 — RISK ANALYSIS
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="risk-analysis">
+  <span class="section-num">09</span>
+  <h2 class="section-title">Risk Analysis</h2>
+  <hr class="section-rule">
+
+
+
+  <div class="risk-box">
+    <div class="risk-box__score"><span class="pipeline-verified" data-field="recon_risk_score">100</span></div>
+    <div class="risk-box__text">
+      Risk Level: <span class="pipeline-verified" data-field="recon_risk_level">HIGH</span>
+      <span>Decision classification: <span class="pipeline-verified" data-field="recon_decision">DANGEROUS</span></span>
+    </div>
+  </div>
+
+  <p>The FishIntel risk assessment integrates multiple environmental drivers to produce a single quantified score. The drivers for this case include:</p>
+
+  <table class="comparison">
+    <thead>
+      <tr>
+        <th class="col-param">Risk Driver</th>
+        <th class="col-recon">Value</th>
+        <th class="col-note">Contribution</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sustained wind</td>
+        <td><span class="pipeline-verified" data-field="recon_wind_speed_kt">27.0 kt</span></td>
+        <td class="note-cell">Primary forcing. Dominant driver of anchor drag and leeway.</td>
+      </tr>
+      <tr>
+        <td>Gust speed</td>
+        <td><span class="pipeline-verified" data-field="recon_gust_speed_kt">44.8 kt</span></td>
+        <td class="note-cell">Peak loading on anchor cable. Gust penalty applied.</td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td><span class="pipeline-verified" data-field="recon_wave_height_m">4.1 m</span></td>
+        <td class="note-cell">Swell-induced heaving increases anchor cable loading cycles.</td>
+      </tr>
+      <tr>
+        <td>Wind vs tide</td>
+        <td><span class="pipeline-verified" data-field="recon_wind_vs_tide">with</span></td>
+        <td class="note-cell">Tide multiplier applied to base risk.</td>
+      </tr>
+      <tr>
+        <td>Visibility</td>
+        <td><span class="pipeline-verified" data-field="recon_visibility_class">moderate</span></td>
+        <td class="note-cell">Situational awareness factor.</td>
+      </tr>
+      <tr>
+        <td>Wind shear</td>
+        <td><span class="pipeline-verified" data-field="recon_wind_shear_kt">12.7 kt</span></td>
+        <td class="note-cell">Relevant to high-windage vessel in ballast condition.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>A vessel in ballast presents a substantially larger windage area than a laden vessel. The combination of sustained storm-force winds, heavy swell, and lee shore exposure at the anchorage position created conditions under which anchor drag was a foreseeable outcome for a vessel of this size and condition.</p>
+
+  <div class="foresee-test">
+    <div class="foresee-test__header">
+      <div class="foresee-test__icon">◆</div>
+      <div class="foresee-test__title">Foreseeability Test</div>
+    </div>
+    <div class="foresee-test__body">
+      <p>This report assesses foreseeability by applying the following test to the reconstructed environmental evidence:</p>
+      <ol class="foresee-test__criteria">
+        <li>The environmental data required to assess the risk existed and was accessible at the time of the decision (ERA5 reanalysis confirms this retrospectively; forecast data confirms it prospectively).</li>
+        <li>The data was sufficient to identify that conditions at the anchorage position would exceed the operational envelope for a vessel of this type, size, and ballast condition.</li>
+        <li>A reasonable operator with access to this data would have identified the risk of anchor drag under the forecast conditions and considered proceeding to sea or relocating to a more sheltered anchorage.</li>
+        <li>The environmental progression from forecast conditions to actual conditions was continuous, not discontinuous — there was no sudden, unforeseeable step-change that made the outcome unavoidable.</li>
+      </ol>
+      <p>This report does not attribute fault or negligence to any individual. The foreseeability test evaluates the environmental evidence, not the decisions of specific persons. Its purpose is to establish whether the conditions that caused the incident were objectively knowable before the outcome occurred.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     10 — KEY ANALYTICAL FINDING
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section section--break" id="key-finding">
+  <span class="section-num">10</span>
+  <h2 class="section-title">Key Analytical Finding</h2>
+  <hr class="section-rule">
+
+  <div class="finding">
+    <div class="finding__label">Key Finding</div>
+    <p>Environmental reconstruction separates local wind forcing from remotely generated swell, revealing that the conventional Beaufort force 9–10 classification in the narrative account conflated two distinct physical mechanisms. ERA5 reanalysis shows 10 m sustained winds of 25.3–27.0 knots (Beaufort force 6–7) at the anchorage position, with gusts of 41.6–44.8 knots and significant wave height of 3.8–4.1 metres. The dominant forcing for anchor drag was heavy swell loading — generated by open-ocean winds over a long English Channel fetch — combined with severe gust intensity on a vessel in ballast with high windage. The hazardous anchoring regime was already established by 03:00 UTC, more than 90 minutes before the anchor began to drag.</p>
+  </div>
+
+  <div style="background:var(--navy-card);border:1px solid var(--red-border);padding:1rem 1.4rem;margin:1.5rem 0;">
+    <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--red);margin-bottom:0.5rem;">Pipeline Classification</div>
+    <p style="margin-bottom:0;"><span class="pipeline-verified" data-field="recon_key_finding">CRITICAL: Environmental reconstruction shows the vessel was in a maximum-risk (100%) anchoring regime across the entire incident window (03:00–05:25 UTC). The dominant forcing was heavy swell (3.8–4.1 m SWH) propagating into the anchorage from the open English Channel, combined with severe gust loading (41.6–44.8 kt). Sustained 10 m wind of 25–27 kt (Beaufort force 6–7) was materially lower than the narrative Force 9–10 description, which reflects a sea-state-based Beaufort estimate conflating remote swell with local wind. The hazardous regime pre-dated the anchor drag event by at least 90 minutes.</span></p>
+  </div>
+
+  <p>This finding is derived from the quantified environmental reconstruction, not from the narrative account. It represents what was objectively knowable at the time the critical operational decision was made, based on environmental data that existed and was accessible.</p>
+
+  <p>This report does not attribute fault or negligence to any individual. The master was aware of the forecast, implemented precautionary measures, and took prompt action when the anchor began to drag. The purpose of the reconstruction is to quantify the environmental conditions and the constraints under which operational decisions were made.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     11 — EVIDENCE INTEGRITY
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="evidence-integrity">
+  <span class="section-num">11</span>
+  <h2 class="section-title">Evidence Integrity</h2>
+  <hr class="section-rule">
+
+  <p>This report is a rendering of outputs produced by the FishIntel deterministic reconstruction pipeline. All environmental values presented are traceable to their source data through an auditable processing chain.</p>
+
+  <div class="integrity">
+    <div class="integrity__title">Pipeline Verification</div>
+    <dl class="integrity-grid">
+      <dt>Data Source</dt>
+      <dd>ECMWF ERA5 Atmospheric Reanalysis</dd>
+      <dt>Processor Version</dt>
+      <dd><span class="pipeline-verified" data-field="raw_processor_version">5.3.0</span></dd>
+      <dt>Runner Version</dt>
+      <dd><span class="pipeline-verified" data-field="runner_version">2.2.0</span></dd>
+      <dt>Gate Config Hash</dt>
+      <dd class="full-span"><span class="pipeline-verified" data-field="gate_config_hash">989aadf7b9b1a4acef8606e162015337e75a8ce5fcb4edfb1e0d79f4d59513aa</span></dd>
+      <dt>Reconstruction Timestamp</dt>
+      <dd><span class="pipeline-verified" data-field="run_timestamp">2026-03-30T22:10:21Z</span></dd>
+      <dt>Raw Format</dt>
+      <dd><span class="pipeline-verified" data-field="raw_format">era5_raw_v1</span></dd>
+      <dt>Case Position</dt>
+      <dd><span class="pipeline-verified" data-field="raw_lat">50.1456</span>°N, <span class="pipeline-verified" data-field="raw_lon">5.0667</span>°W</dd>
+      <dt>Case Timestamp</dt>
+      <dd><span class="pipeline-verified" data-field="raw_timestamp">2018-12-18T05:25:00</span></dd>
+    </dl>
+  </div>
+
+  <p>The pipeline operates as follows: ERA5 NetCDF data is extracted at the incident coordinates and time window by the ERA5 processor, producing raw values in source-native units (m/s, Pa, K, m). These raw values pass through FIG_UNIT_GATE, which performs Decimal-arithmetic unit conversions and plausibility checks before any value enters the reconstruction engine. The gate configuration hash cryptographically identifies the exact conversion factors, plausibility bounds, and variable registry active at the time of processing.</p>
+
+  <p>No manual adjustments, interpolations, or subjective corrections are applied at any stage. The reconstruction is deterministic: the same inputs will always produce the same outputs.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     12 — METHODOLOGY
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="methodology">
+  <span class="section-num">12</span>
+  <h2 class="section-title">Methodology</h2>
+  <hr class="section-rule">
+
+  <p>FishIntel Global reconstructs the environmental conditions surrounding maritime incidents using ECMWF ERA5 atmospheric reanalysis data — the same dataset relied upon by meteorological agencies, climate researchers, and aviation safety authorities worldwide.</p>
+
+  <p>ERA5 provides hourly estimates of atmospheric, land-surface, and ocean-wave variables on a global grid at approximately 31 km horizontal resolution. It assimilates millions of observations per cycle and is continuously quality-controlled by the European Centre for Medium-Range Weather Forecasts. ERA5 data is freely available and independently verifiable by any party.</p>
+
+  <p>The FishIntel reconstruction pipeline extracts environmental variables at the precise coordinates and time window of each incident. All values pass through a unit-gated validation layer that enforces explicit conversion factors and plausibility bounds using Decimal arithmetic — preventing the silent unit errors that are a known source of analytical failure in environmental data processing. The pipeline is deterministic: identical inputs always produce identical outputs.</p>
+
+  <p>This reconstruction operates within defined boundaries. ERA5 is a gridded reanalysis product, not a point measurement. It does not capture localised effects smaller than its grid resolution, such as harbour-scale wind funnelling or shallow-water wave refraction. Where a case involves such effects, the reconstruction states this limitation explicitly. The system is designed to produce defensible evidence, not to overstate its precision.</p>
+
+  <p>FishIntel's role is complementary to national maritime accident investigation. Investigation bodies establish causes and circumstances. FishIntel quantifies the environmental context in which operational decisions were made, using data sources that existed at the time of those decisions. The focus is on what was knowable, not on who is to blame.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     13 — CLOSING STATEMENT
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="section" id="closing">
+  <span class="section-num">13</span>
+  <h2 class="section-title">Closing Statement</h2>
+  <hr class="section-rule">
+
+  <p>Maritime incidents are frequently described after the fact using qualitative or semi-quantitative environmental descriptions: "strong winds," "heavy swell," "poor visibility." These descriptions are valuable for narrative understanding but do not quantify the decision-time environment with the precision required by insurers, regulators, and legal professionals.</p>
+
+  <p>Environmental reconstruction bridges this gap. By reconstructing the conditions that existed at the time a critical decision was made — using data sources that were available or forecastable at that time — it becomes possible to evaluate what was objectively knowable before the outcome occurred.</p>
+
+  <p>This does not mean that every incident was preventable. It means that the environmental context of every maritime decision can now be quantified, compared against published forecasts, and assessed for foreseeability. The data exists. The question is whether it was used.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="report-footer">
+  <strong>FishIntel Global</strong> — Maritime Foreseeability Intelligence<br>
+  This report is generated from verified FishIntel reconstruction pipeline outputs.<br>
+  Environmental reconstruction methodology &amp; system: &copy; FishIntel Global (FIG LTD).<br>
+  Source incident data: Crown copyright. Used in accordance with published reproduction terms.
+</div>
+
+</div><!-- /.report -->
+
+</body>
+</html>
