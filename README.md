@@ -80,6 +80,13 @@ The pipeline is deterministic: identical inputs always produce identical outputs
 
 ERA5 data is freely available from the [Copernicus Climate Data Store](https://cds.climate.copernicus.eu) and independently verifiable by any party.
 
+### FIG-FLAGSHIP-003 — Sailing Yacht Capsize, Sicily, August 2024
+- **Report:** [Environmental Reconstruction v3.0](FishIntel_Environmental_Reconstruction_v3_0.html)
+- **Incident:** Capsize of 56m sailing yacht during mesoscale convective downdraft — 7 fatalities
+- **SHA3-256:** `7ca646682fd66fe57833d71a599c3794acc927c35044a1f4f83b4d0d4acf0932`
+- **Blockchain TX:** [`0xcebf73f3...`](https://polygonscan.com/tx/0xcebf73f3c0764377ebd7760aa2dd459f0f43823b931dc36dd637bb6bcacc867a)
+- **Wallet:** `0x352C97a8e550942186f1A497e532027CB4583605`
+
 ---
 
 ## Disclaimer
