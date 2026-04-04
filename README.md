@@ -98,6 +98,19 @@ Source incident data is Crown copyright (MAIB), used in accordance with publishe
 Environmental reconstruction methodology and system: © FishIntel Global (FIG LTD).
 
 ---
+---
+
+### FIG-FLAGSHIP004 — Environmental Reconstruction — Fatal Man Overboard
+
+- **Incident:** Fatal man overboard during creel shooting operations, 5 February 2018
+- **Vessel:** UK creel fishing vessel — 18.2m
+- **Location:** Approximately 16nm north-west of Cape Wrath, Scotland
+- **Scope:** Environmental reconstruction only (T_irr not applied — crew-level hazard)
+- **Key finding:** ERA5 sustained wind 24.4–25.7 kt (Force 6) across full 4-hour window; MAIB-stated 35 kt aligns with ERA5 gust (36.1 kt), not sustained wind
+- **HTML:** [FishIntel_Environmental_Reconstruction_NorthStar_v1_0.html](FishIntel_Environmental_Reconstruction_NorthStar_v1_0.html)
+- **PDF:** [FishIntel_Environmental_Reconstruction_NorthStar_v1_0.pdf](FishIntel_Environmental_Reconstruction_NorthStar_v1_0.pdf)
+- **Document hash (SHA3-256):** `109b9d9f4e4812eea1bc7c8e991f08abda9c7c7c0b2a954adc59e4e0195ffda9`
+- **Polygon T
 
 ## Contact
 
