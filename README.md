@@ -125,7 +125,7 @@ Environmental reconstruction methodology and system: © FishIntel Global (FIG LT
 - **PDF:** [FishIntel Environmental Reconstruction FLAGSHIP005 v1 0.pdf](FishIntel_Environmental_Reconstruction_FLAGSHIP005_v1_0.pdf)
 - **Document hash (SHA3-256):** `024ec3ce3e50bbadb1aa22c117a2ea0d8aaf8f98e5755235074fedc3506f8cb2`
 - **Polygon TX:** [`0xb0b139a7...`](https://polygonscan.com/tx/0xb0b139a7da6b4b338b0f83186826b6363aaa1461e410ec3021ab1117ab67761b)
-  **Wallet:** `0x352C97a8e550942186f1A497e532027CB4583605`
+- **Wallet:** `0x352C97a8e550942186f1A497e532027CB4583605`
   
   ## Contact
 
