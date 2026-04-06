@@ -110,8 +110,8 @@ Environmental reconstruction methodology and system: © FishIntel Global (FIG LT
 - **HTML:** [FishIntel_Environmental_Reconstruction_NorthStar_v1_0.html](FishIntel_Environmental_Reconstruction_NorthStar_v1_0.html)
 - **PDF:** [FishIntel_Environmental_Reconstruction_NorthStar_v1_0.pdf](FishIntel_Environmental_Reconstruction_NorthStar_v1_0.pdf)
 - **Document hash (SHA3-256):** `109b9d9f4e4812eea1bc7c8e991f08abda9c7c7c0b2a954adc59e4e0195ffda9`
-- **Polygon TX:** [`0x498ae0b67917a0d883ebb8552f0d403c736038e211fc7ca0672d4c037cf2794a`](https://polygonscan.com/tx/0x498ae0b67917a0d883ebb8552f0d403c736038e211fc7ca0672d4c037cf2794a)
-- **Wallet:** `0x352C97a8e550942186f1A497e532027CB4583605`
+- **Polygon TX:** [`0x498ae0b6...`](https://polygonscan.com/tx/0x498ae0b67917a0d883ebb8552f0d403c736038e211fc7ca0672d4c037cf2794a)
+- · Wallet: `0x352C97a8e550942186f1A497e532027CB4583605`
   ---
 
 ### FIG-FLAGSHIP005 — Environmental Reconstruction — Tug Capsize During Ship Assist Towage
