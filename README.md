@@ -112,6 +112,20 @@ Environmental reconstruction methodology and system: © FishIntel Global (FIG LT
 - **Document hash (SHA3-256):** `109b9d9f4e4812eea1bc7c8e991f08abda9c7c7c0b2a954adc59e4e0195ffda9`
 - **Polygon TX:** [`0x498ae0b67917a0d883ebb8552f0d403c736038e211fc7ca0672d4c037cf2794a`](https://polygonscan.com/tx/0x498ae0b67917a0d883ebb8552f0d403c736038e211fc7ca0672d4c037cf2794a)
   **Wallet:** `0x352C97a8e550942186f1A497e532027CB4583605`
+  ---
+
+### FIG-FLAGSHIP005 — Environmental Reconstruction — Tug Capsize During Ship Assist Towage
+
+- **Incident:** Capsize of tug during ship assist towage, 24 February 2023
+- **Vessel:** Twin screw workboat / tug — Very Serious Marine Casualty (2 fatalities)
+- **Location:** Navigational channel off Greenock, Scotland
+- **Scope:** Atmospheric-only reconstruction (ERA5 wave data land-masked at location). T_irr decision-window analysis.
+- **Key finding:** ERA5 confirms operationally benign conditions throughout. Wind 7.3 kt sustained at decision frame, declining to 6.1 kt. T_irr: REGIME_1_SAFE — full environmental decision budget intact. No environmental forcing capable of contributing to the capsize was detected.
+- **HTML:** [FishIntel Environmental Reconstruction FLAGSHIP005 v1 0.html](FishIntel_Environmental_Reconstruction_FLAGSHIP005_v1_0.html)
+- **PDF:** [FishIntel Environmental Reconstruction FLAGSHIP005 v1 0.pdf](FishIntel_Environmental_Reconstruction_FLAGSHIP005_v1_0.pdf)
+- **Document hash (SHA3-256):** `024ec3ce3e50bbadb1aa22c117a2ea0d8aaf8f98e5755235074fedc3506f8cb2`
+- **Polygon TX:** [`0xb0b139a7...`](https://polygonscan.com/tx/0xb0b139a7da6b4b338b0f83186826b6363aaa1461e410ec3021ab1117ab67761b)
+  **Wallet:** `0x352C97a8e550942186f1A497e532027CB4583605`
   
   ## Contact
 
