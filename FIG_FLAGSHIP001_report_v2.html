@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FishIntel Global — Decision-Time Environmental Reconstruction</title>
+<style>
+
+:root {
+  --ink:#eaecf0;--ink-body:#d4d8e0;--ink-muted:#9ba4b4;--ink-dim:#778192;
+  --navy:#080f1a;--navy-card:#0d1520;--navy-surface:#111c2b;--navy-mid:#1a2d45;--navy-rule:#243752;
+  --teal:#3ecfab;--teal-muted:rgba(62,207,171,0.50);--teal-bg:rgba(62,207,171,0.08);--teal-border:rgba(62,207,171,0.28);
+  --amber:#e6a817;--amber-muted:rgba(230,168,23,0.55);--amber-bg:rgba(230,168,23,0.10);--amber-border:rgba(230,168,23,0.30);
+  --red:#e05252;--red-muted:rgba(224,82,82,0.55);--red-bg:rgba(224,82,82,0.10);--red-border:rgba(224,82,82,0.25);
+  --white:#ffffff;
+  --font-display:Georgia,'Times New Roman','Palatino Linotype',serif;
+  --font-body:'Segoe UI',Optima,Candara,'Helvetica Neue',Helvetica,sans-serif;
+  --font-mono:Consolas,'Liberation Mono','Courier New',monospace;
+  --max-width:800px;--page-pad:2.5rem;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:17px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);font-weight:400;color:var(--ink-body);background:var(--navy);line-height:1.72}
+.report{max-width:var(--max-width);margin:0 auto;padding:0 var(--page-pad)}
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:4rem 0;page-break-after:always}
+.cover-brand{display:flex;align-items:center;gap:0.6rem;margin-bottom:3.5rem}
+.cover-brand__mark{width:28px;height:28px;border:2px solid var(--teal);border-radius:2px;display:flex;align-items:center;justify-content:center}
+.cover-brand__mark span{font-family:var(--font-mono);font-weight:500;font-size:0.7rem;color:var(--teal)}
+.cover-brand__name{font-family:var(--font-body);font-weight:600;font-size:0.85rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--teal)}
+.cover-rule{width:56px;height:2px;background:var(--teal);border:none;margin-bottom:2rem;opacity:0.7}
+.cover-type{font-weight:500;font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:0.6rem}
+.cover-title{font-family:var(--font-display);font-weight:700;font-size:2.85rem;line-height:1.15;color:var(--ink);margin-bottom:0.5rem}
+.cover-subtitle{font-family:var(--font-display);font-weight:400;font-style:italic;font-size:1.35rem;color:var(--ink-muted);margin-bottom:3.5rem}
+.cover-meta{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem 2.5rem;max-width:460px;padding-top:1.5rem;border-top:1px solid var(--navy-rule)}
+.cover-meta dt{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-dim)}
+.cover-meta dd{font-size:0.92rem;color:var(--ink-muted);margin-bottom:0.75rem}
+.cover-status{margin-top:3rem;display:inline-block;padding:0.5rem 1.1rem;border:1px dashed var(--amber-border);background:var(--amber-bg);font-size:0.74rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber)}
+.cover-class{margin-top:1.5rem;font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);padding:0.5rem 0;border-top:1px solid var(--navy-rule)}
+.section{padding-top:2.5rem;padding-bottom:0.5rem;page-break-inside:avoid}
+.section--break{page-break-before:always}
+.section-num{font-family:var(--font-mono);font-size:0.82rem;font-weight:500;color:var(--teal);letter-spacing:0.08em;display:block;margin-bottom:0.3rem}
+.section-title{font-family:var(--font-display);font-weight:700;font-size:1.7rem;color:var(--ink);line-height:1.25}
+.section-rule{width:36px;height:2px;background:var(--teal);border:none;margin:0.85rem 0 1.5rem 0;opacity:0.6}
+p{margin-bottom:1.05rem;font-size:0.96rem}
+strong{font-weight:600;color:var(--ink)}
+em{font-style:italic}
+small{font-size:0.78rem;color:var(--ink-dim);display:block;margin-top:0.1rem}
+.pipeline-verified{font-family:var(--font-mono);font-size:0.82rem;font-weight:600;color:var(--teal);letter-spacing:0.01em}
+.vessel-card{background:var(--navy-card);border:1px solid var(--navy-rule);padding:1.4rem 1.6rem;margin:1.5rem 0 2rem 0}
+.vessel-card__header{font-family:var(--font-display);font-weight:700;font-size:1.12rem;color:var(--ink);margin-bottom:0.9rem;padding-bottom:0.55rem;border-bottom:1px solid var(--navy-rule)}
+.vessel-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.15rem 2.5rem}
+.vessel-grid dt{font-size:0.73rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-dim)}
+.vessel-grid dd{font-size:0.92rem;color:var(--ink-body);margin-bottom:0.6rem}
+.comparison{width:100%;border-collapse:collapse;margin:1.5rem 0 2rem 0;font-size:0.9rem}
+.comparison th{text-align:left;font-weight:600;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.09em;padding:0.65rem 0.8rem;border-bottom:2px solid var(--navy-rule);background:var(--navy-card)}
+.comparison th.col-param{color:var(--ink-muted);min-width:160px}
+.comparison th.col-narr{color:var(--ink-muted)}
+.comparison th.col-recon{color:var(--teal)}
+.comparison th.col-note{color:var(--ink-dim)}
+.comparison td{padding:0.7rem 0.8rem;border-bottom:1px solid var(--navy-rule);vertical-align:top}
+.comparison tr:last-child td{border-bottom:2px solid var(--navy-rule)}
+.comparison td:first-child{font-weight:500;color:var(--ink-muted);font-size:0.85rem}
+.comparison .val-narr{font-weight:500;color:var(--ink-body)}
+.comparison .note-cell{font-size:0.82rem;color:var(--ink-muted);font-style:italic}
+.escalation-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.9rem}
+.escalation-table th{text-align:left;font-weight:600;font-size:0.74rem;text-transform:uppercase;letter-spacing:0.09em;padding:0.65rem 0.8rem;border-bottom:2px solid var(--teal-border);background:var(--navy-card);color:var(--ink-muted)}
+.escalation-table td{padding:0.7rem 0.8rem;border-bottom:1px solid var(--navy-rule);font-family:var(--font-mono);font-size:0.9rem;color:var(--ink-body)}
+.escalation-table tr:last-child td{border-bottom:2px solid var(--navy-rule)}
+.escalation-table td:first-child{font-weight:500;color:var(--ink)}
+.escalation-table .label-cell{font-family:var(--font-body);font-size:0.84rem;color:var(--ink-muted);font-style:italic}
+.escalation-table .risk-high{color:var(--red);font-weight:600}
+.escalation-table .risk-elevated{color:var(--amber);font-weight:600}
+.timeline{position:relative;margin:2rem 0;padding-left:2.5rem}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--navy-rule)}
+.tl-event{position:relative;margin-bottom:1.6rem;page-break-inside:avoid}
+.tl-event::before{content:'';position:absolute;left:-2.5rem;top:0.4rem;width:10px;height:10px;border-radius:50%;border:2px solid var(--navy-mid);background:var(--navy)}
+.tl-event--critical::before{background:var(--red);border-color:var(--red)}
+.tl-event--decision::before{background:var(--amber);border-color:var(--amber)}
+.tl-event--anchor::before{background:var(--teal);border-color:var(--teal)}
+.tl-time{font-family:var(--font-mono);font-size:0.8rem;font-weight:500;color:var(--teal);margin-bottom:0.1rem}
+.tl-label{font-weight:600;font-size:0.94rem;color:var(--ink);margin-bottom:0.2rem}
+.tl-detail{font-size:0.85rem;color:var(--ink-muted);line-height:1.55}
+.tl-env{display:inline-block;margin-top:0.35rem;font-family:var(--font-mono);font-size:0.76rem;padding:0.2rem 0.55rem;border-left:2px solid var(--navy-mid);background:var(--navy-card);color:var(--ink-muted)}
+.data-row{display:flex;gap:0.85rem;margin:1.5rem 0;flex-wrap:wrap}
+.data-cell{flex:1;min-width:130px;background:var(--navy-card);border:1px solid var(--navy-rule);padding:1rem;text-align:center}
+.data-cell__value{font-family:var(--font-mono);font-size:1.6rem;font-weight:500;color:var(--ink);line-height:1.2}
+.data-cell__value .unit{font-size:0.7rem;font-weight:400;color:var(--ink-dim)}
+.data-cell__label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-muted);margin-top:0.3rem;font-weight:500}
+.risk-box{display:flex;align-items:center;gap:1.1rem;margin:1.5rem 0;padding:1.1rem 1.35rem}
+.risk-box__score{font-family:var(--font-mono);font-weight:700;font-size:1.45rem;min-width:55px;text-align:center}
+.risk-box__text{font-size:0.88rem;font-weight:500}
+.risk-box__text span{display:block;font-weight:400;font-size:0.8rem;color:var(--ink-muted);margin-top:0.1rem}
+.finding{background:var(--navy-card);border-left:4px solid var(--teal);padding:1.5rem 1.75rem;margin:2rem 0}
+.finding__label{font-size:0.76rem;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;color:var(--teal);margin-bottom:0.7rem}
+.finding p{font-size:0.96rem;line-height:1.75;color:var(--ink-body);margin-bottom:0}
+.conversion-chain{background:var(--navy-card);border:1px solid var(--navy-rule);padding:1.15rem 1.4rem;margin:1.5rem 0;font-family:var(--font-mono);font-size:0.82rem;line-height:2;color:var(--ink-muted)}
+.conversion-chain .label{color:var(--ink-muted);font-family:var(--font-body);font-size:0.8rem;display:block;margin-bottom:0.15rem}
+.analytical-note{background:var(--navy-card);border-left:3px solid var(--teal);padding:1.1rem 1.4rem;margin:1.5rem 0;page-break-inside:avoid}
+.analytical-note__label{font-size:0.76rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal);margin-bottom:0.6rem}
+.analytical-note p{font-size:0.92rem;color:var(--ink-body);line-height:1.65;margin-bottom:0.7rem}
+.analytical-note p:last-child{margin-bottom:0}
+.note{background:var(--amber-bg);border-left:3px solid var(--amber-border);padding:0.8rem 1.1rem;margin:1.5rem 0;font-size:0.85rem;color:var(--amber);line-height:1.6}
+.note strong{color:var(--amber);font-weight:600}
+.foresee-test{background:var(--navy-card);border:1px solid var(--teal-border);padding:1.4rem 1.6rem;margin:2rem 0;page-break-inside:avoid}
+.foresee-test__header{display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;padding-bottom:0.55rem;border-bottom:1px solid var(--navy-rule)}
+.foresee-test__icon{font-size:0.85rem;color:var(--teal)}
+.foresee-test__title{font-weight:600;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal)}
+.foresee-test__body{font-size:0.92rem;color:var(--ink-body);line-height:1.7}
+.foresee-test__body p{margin-bottom:0.7rem;font-size:0.92rem}
+.foresee-test__criteria{margin:0.75rem 0;padding-left:1.2rem}
+.foresee-test__criteria li{font-size:0.9rem;color:var(--ink-body);margin-bottom:0.4rem;line-height:1.55;list-style-type:none;position:relative}
+.foresee-test__criteria li::before{content:'\2014';position:absolute;left:-1.1rem;color:var(--teal-muted)}
+.tirr-card{background:var(--navy-card);border:1px solid var(--navy-rule);padding:1.4rem 1.6rem;margin:1.5rem 0}
+.tirr-card__header{font-family:var(--font-display);font-weight:700;font-size:1.12rem;color:var(--ink);margin-bottom:0.9rem;padding-bottom:0.5rem;border-bottom:1px solid var(--navy-rule)}
+.tirr-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.15rem 2.5rem}
+.tirr-grid dt{font-size:0.76rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-dim)}
+.tirr-grid dd{font-size:0.92rem;color:var(--ink-body);margin-bottom:0.65rem}
+.window-bar{margin:1.5rem 0}
+.window-bar__track{height:28px;background:var(--navy-surface);border:1px solid var(--navy-rule);position:relative;display:flex}
+.window-bar__segment{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.7rem;font-weight:500;letter-spacing:0.04em}
+.window-bar__segment--open{background:rgba(62,207,171,0.15);color:var(--teal);border-right:1px solid var(--teal-muted)}
+.window-bar__segment--narrowing{background:rgba(230,168,23,0.12);color:var(--amber);border-right:1px solid var(--amber-muted)}
+.window-bar__segment--closed{background:rgba(224,82,82,0.1);color:var(--red-muted)}
+.window-bar__labels{display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.68rem;color:var(--ink-muted)}
+.integrity{background:var(--navy-card);border:1px solid var(--navy-rule);padding:1.75rem;margin:3rem 0 2rem 0;page-break-inside:avoid}
+.integrity__title{font-weight:600;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--ink-dim);margin-bottom:1.15rem;padding-bottom:0.6rem;border-bottom:1px solid var(--navy-rule)}
+.integrity-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.25rem 2rem}
+.integrity-grid dt{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-dim);font-weight:500}
+.integrity-grid dd{font-family:var(--font-mono);font-size:0.8rem;color:var(--ink-muted);margin-bottom:0.65rem;word-break:break-all}
+.integrity-grid dd.full-span{grid-column:1/-1}
+.chart-frame{background:var(--navy-card);border:1px solid var(--navy-rule);margin:1.5rem 0 2rem 0;page-break-inside:avoid}
+.chart-frame__header{padding:0.75rem 1.2rem;border-bottom:1px solid var(--navy-rule);display:flex;justify-content:space-between;align-items:center}
+.chart-frame__title{font-size:0.82rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-muted)}
+.chart-frame__badge{font-family:var(--font-mono);font-size:0.7rem;font-weight:500;padding:0.15rem 0.5rem;letter-spacing:0.04em}
+.chart-legend{display:flex;gap:1.2rem;padding:0.65rem 1.2rem;border-top:1px solid var(--navy-rule);flex-wrap:wrap}
+.chart-legend__item{display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:var(--ink-muted)}
+.chart-legend__swatch{width:16px;height:3px;border-radius:1px}
+.chart-legend__swatch--wind{background:var(--teal)}
+.chart-legend__swatch--gust{background:var(--red)}
+.chart-legend__swatch--wave{background:var(--amber)}
+.report-footer{text-align:center;padding:2.5rem 0 4rem 0;font-size:0.74rem;color:var(--ink-dim);border-top:1px solid var(--navy-rule)}
+.report-footer strong{color:var(--ink-muted)}
+.trust-banner{margin:2rem 0 1rem 0;padding:1rem 1.4rem;display:flex;align-items:center;gap:1rem;page-break-inside:avoid}
+.trust-banner--evidence{background:var(--teal-bg);border:1px solid var(--teal-border)}
+.trust-banner--qualified{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.trust-banner--insufficient{background:var(--red-bg);border:1px solid var(--red-border)}
+.trust-banner__grade{font-family:var(--font-mono);font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.7rem;border-radius:2px;white-space:nowrap}
+.trust-banner__grade--evidence{color:var(--teal);border:1px solid var(--teal-border)}
+.trust-banner__grade--qualified{color:var(--amber);border:1px solid var(--amber-border)}
+.trust-banner__grade--insufficient{color:var(--red);border:1px solid var(--red-border)}
+.trust-banner__text{font-size:0.84rem;color:var(--ink-muted);line-height:1.5}
+.score-band{margin:1.5rem 0}
+.score-band__track{height:24px;background:linear-gradient(to right,var(--teal-bg) 0%,var(--teal-bg) 40%,var(--amber-bg) 40%,var(--amber-bg) 70%,var(--red-bg) 70%,var(--red-bg) 100%);border:1px solid var(--navy-rule);position:relative;border-radius:2px}
+.score-band__marker{position:absolute;top:-6px;bottom:-6px;width:3px;background:var(--white);border-radius:1px;transform:translateX(-50%)}
+.score-band__labels{display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.65rem;color:var(--ink-dim);font-family:var(--font-mono)}
+.div-badge{display:inline-block;font-family:var(--font-mono);font-size:0.72rem;font-weight:600;padding:0.2rem 0.55rem;border-radius:2px;letter-spacing:0.04em}
+.div-badge--overstated{color:var(--amber);border:1px solid var(--amber-border);background:var(--amber-bg)}
+.div-badge--confirmed{color:var(--teal);border:1px solid var(--teal-border);background:var(--teal-bg)}
+.div-badge--understated{color:var(--red);border:1px solid var(--red-border);background:var(--red-bg)}
+.div-badge--insufficient{color:var(--ink-dim);border:1px solid var(--navy-rule);background:var(--navy-card)}
+.accel-card{background:var(--navy-card);border:1px solid var(--navy-rule);padding:1.4rem 1.6rem;margin:1.5rem 0}
+.accel-card__header{font-family:var(--font-display);font-weight:700;font-size:1.12rem;color:var(--ink);margin-bottom:0.9rem;padding-bottom:0.5rem;border-bottom:1px solid var(--navy-rule)}
+.accel-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.15rem 2.5rem}
+.accel-grid dt{font-size:0.76rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-dim)}
+.accel-grid dd{font-size:0.92rem;color:var(--ink-body);margin-bottom:0.65rem}
+.limitation-list{margin:1rem 0;padding-left:0}
+.limitation-list li{list-style:none;position:relative;padding-left:1.2rem;margin-bottom:0.6rem;font-size:0.9rem;color:var(--ink-body);line-height:1.55}
+.limitation-list li::before{content:'\25A0';position:absolute;left:0;color:var(--ink-dim);font-size:0.55rem;top:0.35rem}
+.protocol-meta{background:var(--navy-card);border:1px solid var(--navy-rule);padding:0.8rem 1.2rem;margin:1rem 0;font-size:0.78rem;color:var(--ink-dim);display:flex;gap:2rem;flex-wrap:wrap}
+.protocol-meta span{font-family:var(--font-mono);color:var(--ink-muted)}
+@media print{
+  body{background:#0a1018!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .report{max-width:100%;padding:0 1.5cm}
+  .cover{min-height:auto;padding:3cm 0}
+  .section{padding-top:1.5rem}
+  .integrity,.vessel-card,.data-cell,.finding,.risk-box,.comparison th,.comparison td,
+  .tl-env,.conversion-chain,.cover-status,.chart-frame,.chart-legend,
+  .window-bar__segment,.window-bar__track,.tirr-card,.foresee-test,
+  .trust-banner,.accel-card,.score-band__track,.div-badge,.analytical-note,
+  .note,.protocol-meta{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@page{size:A4;margin:1.8cm 1.5cm}
+
+</style>
+</head>
+<body>
+<div class="report">
+
+<div class="cover" id="cover">
+  <div class="cover-brand">
+    <div class="cover-brand__mark"><span>FI</span></div>
+    <div class="cover-brand__name">FishIntel Global</div>
+  </div>
+  <hr class="cover-rule">
+  <div class="cover-type">Environmental Reconstruction Report</div>
+  <h1 class="cover-title">Decision-Time Environmental Reconstruction</h1>
+  <div class="cover-subtitle">Anchorage Failure During Forecast Storm Conditions</div>
+  <dl class="cover-meta">
+    <dt>Incident Window</dt><dd>Winter storm period</dd>
+    <dt>Report Reference</dt><dd>FIG-FLAGSHIP-001</dd>
+    <dt>Vessel Category</dt><dd>Bulk carrier, in ballast</dd>
+    <dt>Report Version</dt><dd>v2.0</dd>
+    <dt>Operational Context</dt><dd>UK coastal lee shore anchorage</dd>
+    <dt>Classification</dt><dd>Public — Anonymised</dd>
+  </dl>
+  <div class="cover-status">Environmental reconstruction complete — All data verified</div>
+  <div class="cover-class">Public version — Anonymised case study — Not protectively marked</div>
+</div>
+
+<div class="trust-banner trust-banner--qualified">
+  <div class="trust-banner__grade trust-banner__grade--qualified">QUALIFIED</div>
+  <div class="trust-banner__text">This report presents a complete environmental reconstruction from ERA5 reanalysis data. The composite risk score incorporates two supplementary parameters (atmospheric pressure, air temperature) at standard reference values rather than case-specific measurements. All primary risk drivers — wind speed, gust speed, and significant wave height — are derived entirely from ERA5.</div>
+</div>
+<div class="protocol-meta">
+  <span>Protocol v1.1</span>
+  <span>Report v2.0</span>
+  <span>Renderer v2.0.0</span>
+  <span>Report ID: FIG-FLAGSHIP-001</span>
+</div>
+
+
+<div class="section section--break" id="executive-summary">
+  <span class="section-num">01</span>
+  <h2 class="section-title">Executive Summary</h2>
+  <hr class="section-rule">
+  <p>Incident type: Grounding following anchor drag. A foreign-registered bulk carrier, anchored in ballast at a UK coastal anchorage, dragged its anchor during a severe winter storm and grounded on a public beach. Successfully refloated. No injuries, no pollution.</p>
+  <p>Core question: What environmental conditions were objectively knowable at the time the decision was made to remain at anchor on a lee shore overnight, and at what point did those conditions make the vessel&#39;s position untenable?</p>
+  <p>Method: ERA5 atmospheric reanalysis data was extracted at the anchorage coordinates across a five-point time window (21:00–05:00 UTC) and processed through the FishIntel deterministic reconstruction pipeline.</p>
+  <p>Key result: The vessel was in an ELEVATED-risk environmental regime from 21:00 UTC, escalating to EXTREME risk by 00:00 UTC — five hours before the grounding. All three monitored environmental signals (wind, gust, wave) exceeded safety thresholds simultaneously at 21:00 UTC, providing an 8-hour intervention window.</p>
+  <p>Analytical finding: Environmental reconstruction shows conditions were deteriorating gradually and predictably across the entire incident window. The narrative description of Force 9–10 appears to conflate locally generated wind with remotely generated swell. ERA5 shows sustained wind of 20–27 knots (Beaufort force 5–7), not the 47–55 knots implied by the narrative Beaufort classification.</p>
+</div>
+
+
+<div class="section" id="incident-overview">
+  <span class="section-num">02</span>
+  <h2 class="section-title">Incident Overview</h2>
+  <hr class="section-rule">
+
+  <div class="vessel-card">
+    <div class="vessel-card__header">Vessel Profile</div>
+    <dl class="vessel-grid">
+      <dt>Type</dt>
+      <dd>Bulk carrier</dd>
+      <dt>Flag</dt>
+      <dd>Foreign-registered</dd>
+      <dt>Length Overall</dt>
+      <dd>~180 m</dd>
+      <dt>Gross Tonnage</dt>
+      <dd>~16,000</dd>
+      <dt>Year of Build</dt>
+      <dd>Early 1980s</dd>
+      <dt>Cargo Condition</dt>
+      <dd>In ballast</dd>
+      <dt>Propulsion</dt>
+      <dd>Direct drive, single fixed-pitch propeller, no bow thruster</dd>
+      <dt>Crew</dt>
+      <dd>18</dd>
+      <dt>Anchors</dt>
+      <dd>Two, similar to AC14 type. Port: 11 shackles. Starboard: 10 shackles.</dd>
+      <dt>P&amp;I Insurance</dt>
+      <dd>Not in force at time of incident</dd>
+    </dl>
+  </div>
+  <p>The vessel had sailed from a European port following a lengthy port state control detention. Unable to take bunkers before departure due to unpaid debts, she was ordered to proceed to North Africa for refuelling but had insufficient fuel for the passage.</p>
+  <p>She anchored in the bay approximately 1 nautical mile off a public beach, in a charted depth of 17 metres, using the port anchor with 7 shackles of cable.</p>
+  <p>On the evening before the grounding, the master was aware that the weather forecast predicted southerly winds up to Beaufort force 8. He wrote in his night orders that the main engine should be at immediate readiness for wind speeds exceeding 16–17 m/s.</p>
+  <p>By 0400 the following morning, the wind was gusting over 52 knots with a 4–5 metre swell. At 0425, the anchor began to drag. Despite full engine power and helm, the master was unable to turn the vessel into the wind. She grounded at 0525.</p>
+  <p>The vessel was refloated by harbour tugs at 1415 the same day. An underwater survey revealed hull plate deformation, breached tanks, and partial bilge keel detachment. There were no injuries and no pollution.</p>
+</div>
+
+
+<div class="section section--break" id="environmental-escalation-timeline">
+  <span class="section-num">03</span>
+  <h2 class="section-title">Environmental Escalation Timeline</h2>
+  <hr class="section-rule">
+
+  <p>ERA5 reanalysis data was extracted at the incident coordinates across 5 timestamps. The following table presents reconstructed conditions and composite risk score at each extraction point.</p>
+  <table class="escalation-table">
+    <thead><tr>
+      <th>Time (UTC)</th><th>Event</th><th>Sustained Wind</th>
+      <th>Gusts</th><th>Sig. Wave Ht</th><th>Risk Score</th><th>Band</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>21:00</td>
+        <td class="label-cell">Initial assessment</td>
+        <td><span class="pipeline-verified">20.1 kt</span></td>
+        <td><span class="pipeline-verified">32.0 kt</span></td>
+        <td><span class="pipeline-verified">2.7 m</span></td>
+        <td style="font-family:var(--font-mono);font-weight:600;"><span class="pipeline-verified">60.1%</span></td>
+        <td class="risk-elevated">ELEVATED</td>
+      </tr>
+      <tr>
+        <td>00:00</td>
+        <td class="label-cell">Escalation to EXTREME</td>
+        <td><span class="pipeline-verified">23.5 kt</span></td>
+        <td><span class="pipeline-verified">37.9 kt</span></td>
+        <td><span class="pipeline-verified">3.3 m</span></td>
+        <td style="font-family:var(--font-mono);font-weight:600;"><span class="pipeline-verified">91.4%</span></td>
+        <td class="risk-high">EXTREME</td>
+      </tr>
+      <tr>
+        <td>03:00</td>
+        <td class="label-cell">Conditions continuing</td>
+        <td><span class="pipeline-verified">25.3 kt</span></td>
+        <td><span class="pipeline-verified">41.6 kt</span></td>
+        <td><span class="pipeline-verified">3.8 m</span></td>
+        <td style="font-family:var(--font-mono);font-weight:600;"><span class="pipeline-verified">100.0%</span></td>
+        <td class="risk-high">EXTREME</td>
+      </tr>
+      <tr>
+        <td>04:00</td>
+        <td class="label-cell">Conditions continuing</td>
+        <td><span class="pipeline-verified">26.2 kt</span></td>
+        <td><span class="pipeline-verified">43.7 kt</span></td>
+        <td><span class="pipeline-verified">4.0 m</span></td>
+        <td style="font-family:var(--font-mono);font-weight:600;"><span class="pipeline-verified">100.0%</span></td>
+        <td class="risk-high">EXTREME</td>
+      </tr>
+      <tr>
+        <td>05:00</td>
+        <td class="label-cell">Lead timestamp</td>
+        <td><span class="pipeline-verified">27.0 kt</span></td>
+        <td><span class="pipeline-verified">44.8 kt</span></td>
+        <td><span class="pipeline-verified">4.1 m</span></td>
+        <td style="font-family:var(--font-mono);font-weight:600;"><span class="pipeline-verified">100.0%</span></td>
+        <td class="risk-high">EXTREME</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="analytical-note">
+    <div class="analytical-note__label">Scoring Methodology</div>
+    <p>Risk classifications are derived from a domain-calibrated model developed against historical maritime environmental conditions. The model assigns ordinal severity bands (LOW through EXTREME) based on the combined effect of wind, gust, wave, and contextual factors. The model has not been independently peer-reviewed. The environmental reconstruction data underlying the scores is independently verifiable from ERA5.</p>
+  </div>
+</div>
+
+
+<div class="section" id="narrative-weather-description">
+  <span class="section-num">04</span>
+  <h2 class="section-title">Narrative Weather Description</h2>
+  <hr class="section-rule">
+
+  <p>The following environmental conditions were described in the original accident investigation narrative.</p>
+  <table class="comparison">
+    <thead><tr>
+      <th class="col-param">Parameter</th>
+      <th class="col-narr">Narrative Description</th>
+      <th class="col-note">Observations</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>Wind (sustained)</td>
+        <td class="val-narr">Southerly, Beaufort force 9–10 <small>Equivalent to 47–55 knots</small></td>
+        <td class="note-cell">Described at time of incident. No hourly progression provided.</td>
+      </tr>
+      <tr>
+        <td>Wind (gusts)</td>
+        <td class="val-narr">Gusting over 52 knots <small>Reported by 0400</small></td>
+        <td class="note-cell">Single threshold. No peak gust value stated.</td>
+      </tr>
+      <tr>
+        <td>Wind direction</td>
+        <td class="val-narr">Southerly</td>
+        <td class="note-cell">Cardinal direction only. No bearing given.</td>
+      </tr>
+      <tr>
+        <td>Sea / swell</td>
+        <td class="val-narr">4–5 m swell</td>
+        <td class="note-cell">Range given. No wave period or direction stated.</td>
+      </tr>
+      <tr>
+        <td>Forecast (evening before)</td>
+        <td class="val-narr">Southerly up to Beaufort force 8 <small>34–40 knots</small></td>
+        <td class="note-cell">Forecast available to master. Conditions exceeded this forecast.</td>
+      </tr>
+      <tr>
+        <td>Atmospheric pressure</td>
+        <td class="val-narr">Not stated</td>
+        <td class="note-cell">No barometric data in narrative account.</td>
+      </tr>
+      <tr>
+        <td>Air temperature</td>
+        <td class="val-narr">Not stated</td>
+        <td class="note-cell">—</td>
+      </tr>
+      <tr>
+        <td>Visibility</td>
+        <td class="val-narr">Not stated</td>
+        <td class="note-cell">—</td>
+      </tr>
+      <tr>
+        <td>Tidal stream</td>
+        <td class="val-narr">Not stated</td>
+        <td class="note-cell">Not described in the investigation narrative.</td>
+      </tr>
+      <tr>
+        <td>Darkness</td>
+        <td class="val-narr">Incident occurred in darkness (0425–0525 UTC, December)</td>
+        <td class="note-cell">Confirmed by timestamp.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="section section--break" id="environmental-reconstruction">
+  <span class="section-num">05</span>
+  <h2 class="section-title">Environmental Reconstruction</h2>
+  <hr class="section-rule">
+
+  <p>The following table compares narrative conditions with ERA5 reconstruction values. All reconstructed values are produced by the deterministic FishIntel pipeline.</p>
+  <table class="comparison">
+    <thead><tr>
+      <th class="col-param">Parameter</th><th class="col-narr">Narrative</th>
+      <th class="col-recon">FishIntel Reconstruction</th><th class="col-note">Assessment</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>Wind speed (sustained)</td>
+        <td class="val-narr">Beaufort F9–10 (47–55 kt)</td>
+        <td class="val-recon"><span class="pipeline-verified">27.0 kt</span></td>
+        <td class="note-cell">Lower than narrative Beaufort estimate. Likely reflects separation between local 10 m wind and swell-driven sea-state severity.</td>
+      </tr>
+      <tr>
+        <td>Wind gusts</td>
+        <td class="val-narr">Gusting over 52 knots</td>
+        <td class="val-recon"><span class="pipeline-verified">44.8 kt</span></td>
+        <td class="note-cell">Broadly consistent with severe gust loading. ERA5 gust at 10 m is within ~15% of bridge-height observation.</td>
+      </tr>
+      <tr>
+        <td>Wind direction</td>
+        <td class="val-narr">Southerly</td>
+        <td class="val-recon"><span class="pipeline-verified">179°</span></td>
+        <td class="note-cell">Confirmed due south. Consistent with lee shore exposure at anchorage.</td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td class="val-narr">4–5 m swell</td>
+        <td class="val-recon"><span class="pipeline-verified">4.1 m</span></td>
+        <td class="note-cell">Strong alignment. Validates ERA5 capture of the storm event.</td>
+      </tr>
+      <tr>
+        <td>Atmospheric pressure</td>
+        <td class="val-narr">Not stated</td>
+        <td class="val-recon"><span class="pipeline-verified">1004.4 hPa</span></td>
+        <td class="note-cell">Below-average pressure consistent with active low.</td>
+      </tr>
+      <tr>
+        <td>Air temperature</td>
+        <td class="val-narr">Not stated</td>
+        <td class="val-recon"><span class="pipeline-verified">11.8 °C</span></td>
+        <td class="note-cell">Mild for winter; consistent with maritime air mass from the south.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="data-row">
+    <div class="data-cell">
+      <div class="data-cell__value">27.0 <span class="unit">kt</span></div>
+      <div class="data-cell__label">Sustained Wind (10 m)</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value">44.8 <span class="unit">kt</span></div>
+      <div class="data-cell__label">Gust Speed</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value">4.1 <span class="unit">m</span></div>
+      <div class="data-cell__label">Sig. Wave Height</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-cell__value">1004.4 <span class="unit">hPa</span></div>
+      <div class="data-cell__label">Pressure MSL</div>
+    </div>
+  </div>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Analytical Note</div>
+    <p>The narrative account describes conditions as Beaufort force 9 to 10 (47–55 knots sustained). ERA5 reconstruction shows 10 m sustained wind of 27.0 knots (Beaufort force 6–7) at the anchorage position. These are not equivalent measurements and the difference is analytically significant.</p>
+    <p>ERA5 reports the 10-metre neutral-stability wind speed averaged over a ~31 km grid cell. The MAIB Beaufort classification is derived from sea-state observation at the vessel’s position — a method that conflates locally generated wind waves with remotely generated swell.</p>
+    <p>The dominant forcing mechanisms for anchor drag in this case were heavy swell loading on a vessel in ballast combined with severe gust loading (45 kt at 10 m, likely exceeding 50 kt at bridge height). Sustained local Force 9–10 wind was not required to produce the observed outcome.</p>
+  </div>
+  <div class="analytical-note" style="border-left-color:var(--amber);">
+    <div class="analytical-note__label">Divergence Classification</div>
+  </div>
+  <table class="comparison">
+    <thead><tr>
+      <th class="col-param">Parameter</th><th class="col-narr">Narrative</th>
+      <th class="col-recon">Reconstruction</th><th>Classification</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>Wind speed (sustained)</td>
+        <td class="val-narr">47-55 kt</td>
+        <td class="val-recon"><span class="pipeline-verified">27.0 kt</span></td>
+        <td><span class="div-badge div-badge--overstated">OVERSTATED</span></td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td class="val-narr">4-5 m</td>
+        <td class="val-recon"><span class="pipeline-verified">4.1 m</span></td>
+        <td><span class="div-badge div-badge--confirmed">CONFIRMED</span></td>
+      </tr>
+    </tbody>
+  </table>  <div class="conversion-chain">
+    <span class="label">Unit Conversion Chain — Wind Speed</span>
+    ERA5 source: <span class="pipeline-verified">13.875</span> m/s
+    &rarr; × (3600 / 1852) = <span class="pipeline-verified">27.0</span> kt
+    <span class="label">Unit Conversion Chain — Pressure</span>
+    ERA5 source: <span class="pipeline-verified">100438.8</span> Pa
+    &rarr; ÷ 100 = <span class="pipeline-verified">1004.4</span> hPa
+    <span class="label">Unit Conversion Chain — Temperature</span>
+    ERA5 source: <span class="pipeline-verified">284.956</span> K
+    &rarr; − 273.15 = <span class="pipeline-verified">11.8</span> °C
+  </div>
+</div>
+
+
+<div class="section section--break" id="decision-time-environment">
+  <span class="section-num">06</span>
+  <h2 class="section-title">Decision-Time Environment</h2>
+  <hr class="section-rule">
+
+  <p>The following chronology presents events with environmental context at each decision gate.</p>
+  <div class="timeline">
+    <div class="tl-event tl-event--anchor">
+      <div class="tl-time">Day 1 — 1700 UTC</div>
+      <div class="tl-label">Vessel anchored in the bay</div>
+      <div class="tl-detail">Port anchor deployed with 7 shackles of cable in 17 m charted depth, approximately 1 nm from the beach.</div>
+    </div>
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">Day 3 — Evening</div>
+      <div class="tl-label">Decision: remain at anchor overnight</div>
+      <div class="tl-detail">Master aware of forecast: southerly winds up to Beaufort force 8 (34–40 kt). Night orders issued: engine readiness required at wind speeds &gt;16–17 m/s.</div>
+      <div class="tl-env">Forecast: S&#39;ly F8 (34–40 kt) | Decision window: OPEN</div>
+    </div>
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">Day 3 — 2100 UTC</div>
+      <div class="tl-label">First threshold exceedance (ERA5)</div>
+      <div class="tl-detail">All 3 environmental signals (wind, gust, wave) exceed safety thresholds simultaneously. Intervention window opens.</div>
+      <div class="tl-env">20.1 kt sustained, 32.0 kt gusts, 2.7 m SWH | Risk: 60.1% ELEVATED</div>
+    </div>
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">Day 4 — 0000 UTC</div>
+      <div class="tl-label">Storm escalation</div>
+      <div class="tl-detail">Environmental conditions escalate to EXTREME risk band.</div>
+      <div class="tl-env">23.5 kt sustained, 37.9 kt gusts, 3.3 m SWH | Risk: 91.4% EXTREME</div>
+    </div>
+    <div class="tl-event tl-event--decision">
+      <div class="tl-time">Day 4 — 0400 UTC</div>
+      <div class="tl-label">Chief officer takes bridge watch</div>
+      <div class="tl-detail">Southerly wind gusting over 52 knots. Swell 4–5 metres. Vessel yawing at anchor.</div>
+      <div class="tl-env">26.2 kt sustained, 43.7 kt gusts, 4.0 m SWH | Risk: 100% EXTREME</div>
+    </div>
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">Day 4 — 0425 UTC</div>
+      <div class="tl-label">Anchor starts to drag</div>
+      <div class="tl-detail">Anchor watch alarm sounds. Master called, engine room alerted.</div>
+      <div class="tl-env">Decision window: CLOSING</div>
+    </div>
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">Day 4 — ~0500 UTC</div>
+      <div class="tl-label">Anchor aweigh — fouled by chain</div>
+      <div class="tl-detail">Anchor fouled by substantial length of chain. Vessel fell beam-to the wind.</div>
+      <div class="tl-env">Decision window: CLOSED</div>
+    </div>
+    <div class="tl-event tl-event--critical">
+      <div class="tl-time">Day 4 — 0525 UTC</div>
+      <div class="tl-label">Grounding</div>
+      <div class="tl-detail">Vessel grounded on the beach.</div>
+      <div class="tl-env">27.0 kt sustained, 44.8 kt gusts, 4.1 m SWH | Risk: 100% EXTREME</div>
+    </div>
+    <div class="tl-event tl-event--anchor">
+      <div class="tl-time">Day 4 — 1415 UTC</div>
+      <div class="tl-label">Refloated</div>
+      <div class="tl-detail">Vessel refloated by local harbour tugs and own main engine.</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="section section--break" id="environmental-escalation---verified-profile">
+  <span class="section-num">07</span>
+  <h2 class="section-title">Environmental Escalation — Verified Profile</h2>
+  <hr class="section-rule">
+
+  <p>Verified environmental escalation profile across the incident window.</p>
+  <div class="chart-frame">
+    <div class="chart-frame__header">
+      <div class="chart-frame__title">Environmental Conditions — 5-Point Extraction</div>
+      <div class="chart-frame__badge" style="color:var(--teal);border-color:var(--teal-border)">ERA5 DATA</div>
+    </div>
+    <div style="padding:1.5rem 1.5rem 0.5rem 3.5rem;position:relative;">
+      <div style="position:absolute;left:0;top:1.5rem;bottom:0.5rem;width:3rem;display:flex;flex-direction:column;justify-content:space-between;text-align:right;padding-right:0.5rem;">
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">50 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">40 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">30 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">20 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">10 kt</span>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-dim);">0</span>
+      </div>
+      <div style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;position:relative;z-index:1;">
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:40.2%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">20.1</span>
+            </div>
+            <div style="width:22px;height:64.0%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">32.0</span>
+            </div>
+            <div style="width:22px;height:54.0%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">2.7m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-muted);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">21:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Initial assessment</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:47.0%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">23.5</span>
+            </div>
+            <div style="width:22px;height:75.8%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">37.9</span>
+            </div>
+            <div style="width:22px;height:66.0%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">3.3m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-muted);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">00:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Escalation to EXTREME</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:50.6%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">25.3</span>
+            </div>
+            <div style="width:22px;height:83.2%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">41.6</span>
+            </div>
+            <div style="width:22px;height:76.0%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">3.8m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-muted);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">03:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Conditions continuing</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:52.4%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">26.2</span>
+            </div>
+            <div style="width:22px;height:87.4%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">43.7</span>
+            </div>
+            <div style="width:22px;height:80.0%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">4.0m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-muted);font-weight:500;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">04:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Conditions continuing</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex:1;">
+          <div style="display:flex;align-items:flex-end;gap:4px;height:200px;">
+            <div style="width:22px;height:54.0%;background:var(--teal);border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);white-space:nowrap;">27.0</span>
+            </div>
+            <div style="width:22px;height:89.6%;background:var(--red);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--red);white-space:nowrap;">44.8</span>
+            </div>
+            <div style="width:22px;height:82.0%;background:var(--amber);opacity:0.7;border-radius:2px 2px 0 0;position:relative;">
+              <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);white-space:nowrap;">4.1m</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--red);font-weight:600;padding-top:0.3rem;border-top:1px solid var(--navy-rule);width:100%;text-align:center;">05:00</div>
+          <div style="font-size:0.65rem;color:var(--ink-dim);text-align:center;">Lead timestamp</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-legend">
+      <div class="chart-legend__item"><div class="chart-legend__swatch chart-legend__swatch--wind"></div>Sustained wind (kt)</div>
+      <div class="chart-legend__item"><div class="chart-legend__swatch chart-legend__swatch--gust"></div>Gusts (kt)</div>
+      <div class="chart-legend__item"><div class="chart-legend__swatch chart-legend__swatch--wave"></div>Sig. wave height (m, scaled)</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="section" id="threshold-exceedance-analysis">
+  <span class="section-num">08</span>
+  <h2 class="section-title">Threshold Exceedance Analysis</h2>
+  <hr class="section-rule">
+
+  <p>Threshold exceedance detection identifies the first point at which environmental conditions exceeded safety thresholds — determining the intervention window available before the incident.</p>
+  <div class="tirr-card">
+    <div class="tirr-card__header">Threshold Exceedance Findings</div>
+    <dl class="tirr-grid">
+      <dt>First Exceedance</dt><dd><span class="pipeline-verified">2018-12-17 21:00 UTC</span></dd>
+      <dt>Event Time</dt><dd><span class="pipeline-verified">05:00 UTC</span></dd>
+      <dt>Intervention Window</dt>
+      <dd><span style="font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--amber);">480 minutes (8.0 hours)</span></dd>
+      <dt>Signals Exceeded</dt><dd><span class="pipeline-verified">Gust speed, Significant wave height, Sustained wind</span></dd>
+      <dt>Strength at Detection</dt><dd><span class="pipeline-verified">WEAK</span></dd>
+      <dt>Strength Progression</dt><dd><span class="pipeline-verified">WEAK → WEAK → MODERATE → MODERATE → MODERATE</span></dd>
+    </dl>
+  </div>
+  <div class="window-bar">
+    <div class="window-bar__track">
+      <div class="window-bar__segment window-bar__segment--open" style="flex:8.0;">INTERVENTION WINDOW</div>
+      <div class="window-bar__segment window-bar__segment--closed" style="flex:1.5;">EVENT</div>
+    </div>
+    <div class="window-bar__labels">
+      <span>21:00 UTC — First threshold exceedance</span>
+      <span>05:00 UTC — Incident</span>
+    </div>
+  </div>
+</div>
+
+
+<div class="section" id="hazard-acceleration-profile">
+  <span class="section-num">09</span>
+  <h2 class="section-title">Hazard Acceleration Profile</h2>
+  <hr class="section-rule">
+
+  <p>Classification of the rate of environmental deterioration across the incident window.</p>
+  <div class="accel-card">
+    <div class="accel-card__header">Deterioration Classification</div>
+    <dl class="accel-grid">
+      <dt>Composite</dt><dd><span style="font-family:var(--font-mono);font-weight:600;color:var(--amber);">DETERIORATING / GRADUAL</span></dd>
+      <dt>Channels Worsening</dt><dd><span class="pipeline-verified">3 simultaneously</span></dd>
+      <dt>Dominant Channel</dt><dd><span class="pipeline-verified">Sustained wind</span></dd>
+      <dt>Onset Classification</dt><dd>sustained and predictable deterioration</dd>
+    </dl>
+  </div>
+  <table class="comparison" style="margin-top:1rem;">
+    <thead><tr><th class="col-param">Channel</th><th class="col-recon">Trend</th><th class="col-note">Rate</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Sustained wind</td>
+        <td><span class="pipeline-verified">DETERIORATING</span></td>
+        <td><span class="pipeline-verified">GRADUAL</span></td>
+      </tr>
+      <tr>
+        <td>Gust speed</td>
+        <td><span class="pipeline-verified">DETERIORATING</span></td>
+        <td><span class="pipeline-verified">GRADUAL</span></td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td><span class="pipeline-verified">DETERIORATING</span></td>
+        <td><span class="pipeline-verified">GRADUAL</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="section section--break" id="time-to-irreversibility">
+  <span class="section-num">10</span>
+  <h2 class="section-title">Time to Irreversibility</h2>
+  <hr class="section-rule">
+
+  <div class="vessel-card">
+    <div class="vessel-card__header" style="color:var(--teal);">Regime Classification: SAFE</div>
+    <p style="margin-bottom:1rem;color:var(--ink-muted);">T_irr &gt;&gt; T_practical. Wide recovery margin. Intervention was physically possible throughout the incident window.</p>
+    <dl class="vessel-grid">
+      <dt>T_irr (conservative)</dt><dd style="color:var(--teal);font-weight:700;">16.5 minutes</dd>
+      <dt>T_irr (best estimate)</dt><dd style="color:var(--teal);">20.6 minutes</dd>
+      <dt>T_practical</dt><dd>6.0 minutes</dd>
+      <dt>Margin (conservative)</dt><dd style="color:var(--teal);font-weight:700;">+10.5 minutes</dd>
+      <dt>Margin (best estimate)</dt><dd style="color:var(--teal);">+14.6 minutes</dd>
+      <dt>Binding constraint</dt><dd>Spatial drift — distance from anchored position to lee shore</dd>
+    </dl>
+  </div>
+
+  <div class="integrity" style="margin-top:1.5rem;">
+    <div class="integrity__title">Mechanism &amp; Information</div>
+    <dl class="integrity-grid">
+      <dt>Failure mechanism</dt><dd>Gradual degradation</dd>
+      <dt>Mechanism confidence</dt><dd>HIGH</dd>
+      <dt>Description</dt><dd class="full-span">Environmental conditions deteriorated progressively, eroding safety margins incrementally. Primary mechanism matched 4 of 5 diagnostic features. Secondary mechanism (spatial phase transition) also matched, reflecting the anchor drag as a spatial boundary crossing.</dd>
+      <dt>Information channels</dt><dd style="color:var(--teal);">3/3 — SUFFICIENT</dd>
+    </dl>
+  </div>
+
+  <div class="analytical-note" style="margin-top:1.5rem;">
+    <div class="analytical-note__label">T_irr Interpretation</div>
+    <p>T_irr estimates the physical time before the vessel’s situation becomes irreversible. T_practical estimates the minimum time a competent crew would need to recognise the hazard, assess the situation, and begin effective intervention. The margin is the difference: positive margin means intervention was physically possible.</p>
+    <p>Drift rate not stated in the MAIB report. A conservative default of 1.5 m/s was applied from Admiralty Sailing Directions (published upper-bound tidal stream rate for UK coastal waters without engine power). The actual drift rate during anchor drag (approximately 1 nm in 60 minutes, with leeway increasing to over 2 knots as the vessel fell beam-to the wind) was slower than this default, meaning the true T_irr was likely longer than stated here.</p>
+  </div>
+</div>
+
+
+<div class="section section--break" id="risk-analysis">
+  <span class="section-num">11</span>
+  <h2 class="section-title">Risk Analysis</h2>
+  <hr class="section-rule">
+
+  <div class="risk-box" style="background:var(--red-bg);border-color:var(--red-border);">
+    <div class="risk-box__score" style="color:var(--red);">100%</div>
+    <div class="risk-box__text" style="color:var(--red);">
+      Risk Band: EXTREME
+      <span>Composite environmental risk score at lead timestamp</span>
+    </div>
+  </div>
+  <div class="score-band">
+    <div class="score-band__track">
+      <div class="score-band__marker" style="left:100.0%;"></div>
+    </div>
+    <div class="score-band__labels">
+      <span>0%</span><span>LOW &lt;40%</span><span>MOD 40-69%</span><span>HIGH 70-89%</span><span>EXT 90%+</span><span>100%</span>
+    </div>
+  </div>
+  <table class="comparison">
+    <thead><tr><th class="col-param">Risk Driver</th><th class="col-recon">Value</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Sustained wind</td>
+        <td><span class="pipeline-verified">27.0 kt</span></td>
+      </tr>
+      <tr>
+        <td>Gust speed</td>
+        <td><span class="pipeline-verified">44.8 kt</span></td>
+      </tr>
+      <tr>
+        <td>Significant wave height</td>
+        <td><span class="pipeline-verified">4.1 m</span></td>
+      </tr>
+      <tr>
+        <td>Wind vs tide</td>
+        <td><span class="pipeline-verified">with</span></td>
+      </tr>
+      <tr>
+        <td>Visibility</td>
+        <td><span class="pipeline-verified">moderate</span></td>
+      </tr>
+      <tr>
+        <td>Wind shear (10-100m)</td>
+        <td><span class="pipeline-verified">12.7 kt</span></td>
+      </tr>
+      <tr>
+        <td>Dewpoint spread</td>
+        <td><span class="pipeline-verified">3.2 °C</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="comparison" style="margin-top:1.5rem;">
+    <thead><tr><th class="col-param">Multiplier</th><th class="col-recon">Factor</th><th>Status</th><th class="col-note">Rationale</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Proximity</td>
+        <td><span class="pipeline-verified">x1.20</span></td>
+        <td style="color:var(--amber);font-weight:600;font-size:0.82rem;">ACTIVE</td>
+        <td class="note-cell">Proximity factor: vessel operating within 1 nm of shore.</td>
+      </tr>
+      <tr>
+        <td>Circadian</td>
+        <td><span class="pipeline-verified">x1.70</span></td>
+        <td style="color:var(--amber);font-weight:600;font-size:0.82rem;">ACTIVE</td>
+        <td class="note-cell">Fatigue-adjusted: incident occurred during hours of reduced alertness (0300–0600 UTC).</td>
+      </tr>
+      <tr>
+        <td>Cold water</td>
+        <td><span class="pipeline-verified">x1.50</span></td>
+        <td style="color:var(--amber);font-weight:600;font-size:0.82rem;">ACTIVE</td>
+        <td class="note-cell">Environmental severity factor: sea surface temperature below cold-water threshold.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="foresee-test">
+    <div class="foresee-test__header">
+      <div class="foresee-test__icon">&#9670;</div>
+      <div class="foresee-test__title">Foreseeability Test</div>
+    </div>
+    <div class="foresee-test__body">
+      <p>This report assesses foreseeability by applying the following test:</p>
+      <ol class="foresee-test__criteria">
+        <li>The environmental data required to assess the risk existed and was accessible at the time of the decision (ERA5 reanalysis confirms this retrospectively; forecast data confirms it prospectively).</li>
+        <li>The data was sufficient to identify that conditions at the anchorage position would exceed the operational envelope for a vessel of this type, size, and ballast condition.</li>
+        <li>A reasonable operator with access to this data would have identified the risk of anchor drag under the forecast conditions and considered proceeding to sea or relocating to a more sheltered anchorage.</li>
+        <li>The environmental progression from forecast conditions to actual conditions was continuous, not discontinuous — there was no sudden, unforeseeable step-change that made the outcome unavoidable.</li>
+      </ol>
+      <p>This report does not determine causes or assign responsibility. The foreseeability test evaluates environmental evidence only.</p>
+    </div>
+  </div>
+</div>
+
+
+<div class="section section--break" id="key-analytical-finding">
+  <span class="section-num">12</span>
+  <h2 class="section-title">Key Analytical Finding</h2>
+  <hr class="section-rule">
+
+  <div class="finding">
+    <div class="finding__label">Key Finding</div>
+    <p>Environmental reconstruction separates local wind forcing from remotely generated swell, revealing that the conventional Beaufort force 9–10 classification in the narrative account conflated two distinct physical mechanisms. ERA5 reanalysis shows 10 m sustained winds of 20.1–27.0 knots (Beaufort force 5–7) at the anchorage position, with gusts of 32.0–44.8 knots and significant wave height of 2.7–4.1 metres. All three environmental signals exceeded safety thresholds at 21:00 UTC, providing an 8-hour intervention window before the grounding.</p>
+  </div>
+  <div style="background:var(--navy-card);border:1px solid var(--red-border);padding:1rem 1.4rem;margin:1.5rem 0;">
+    <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--red);margin-bottom:0.5rem;">Pipeline Classification</div>
+    <p style="margin-bottom:0;"><span class="pipeline-verified">CRITICAL: Environmental reconstruction shows the vessel entered an ELEVATED risk regime at 21:00 UTC and an EXTREME risk regime by 00:00 UTC — five full hours before the grounding. The dominant forcing was heavy swell (3.8–4.1 m SWH) propagating into the anchorage from the open English Channel, combined with severe gust loading (41.6–44.8 kt). Sustained 10 m wind of 20–27 kt (Beaufort force 5–7) was materially lower than the narrative Force 9–10 description.</span></p>
+  </div>
+  <p>This finding is derived from the quantified environmental reconstruction, not from the narrative account. It represents what was objectively knowable at the time the critical operational decision was made, based on environmental data that existed and was accessible.</p>
+  <p>This report is an environmental reconstruction. It does not make determinations about individual conduct, operational adequacy, or regulatory compliance. Its purpose is to quantify the environmental conditions under which operational decisions were made.</p>
+</div>
+
+
+<div class="section" id="questions-this-report-does-not-answer">
+  <span class="section-num">13</span>
+  <h2 class="section-title">Questions This Report Does Not Answer</h2>
+  <hr class="section-rule">
+
+  <p>The following questions are outside the scope of this reconstruction:</p>
+  <ul class="limitation-list">
+    <li>Whether the master&#39;s decision to remain at anchor was reasonable given the information available to him at the time.</li>
+    <li>Whether the vessel&#39;s anchor and cable were in adequate condition for the expected storm.</li>
+    <li>Whether alternative anchorages or sea room were available and practicable given the vessel&#39;s fuel and operational constraints.</li>
+    <li>Whether the fouled anchor chain was a pre-existing hazard that should have been identified.</li>
+    <li>Whether the port authority or vessel operator should have intervened before the storm arrived.</li>
+  </ul>
+</div>
+
+
+<div class="section" id="analytical-boundaries">
+  <span class="section-num">14</span>
+  <h2 class="section-title">Analytical Boundaries</h2>
+  <hr class="section-rule">
+
+  <p>The following boundaries apply to this reconstruction. Where a boundary introduces directional bias, the direction is stated explicitly so that the reader can assess the weight to place on each finding.</p>
+  <ul class="limitation-list">
+    <li>ERA5 reconstructs conditions on a ~31 km grid. It does not resolve harbour-scale wind acceleration, cliff-edge effects, or shallow-water wave transformation at the anchorage. Where these effects are present, actual conditions at the vessel&#39;s position are typically more severe than the gridded values. The environmental values in this report should therefore be interpreted as conservative lower bounds for the conditions experienced at the anchorage.</li>
+    <li>ERA5 gust speed represents the maximum instantaneous wind at the 10-metre reference height. On a 180-metre vessel in ballast with high windage, the wind speed at bridge height (~25–30 m) would exceed the 10-metre value due to the vertical wind shear profile. The gust values presented in this report understate the actual wind loading on the vessel&#39;s superstructure.</li>
+    <li>This reconstruction quantifies the environmental conditions surrounding the incident. Vessel-specific margin analysis — such as anchor holding capacity versus environmental loading — was outside scope. The environmental reconstruction is complete; the vessel-response modelling was not attempted for this case.</li>
+    <li>ERA5 significant wave height represents open-ocean conditions. In a coastal anchorage, shoaling, refraction, and harbour geometry can modify wave characteristics. Depending on bathymetry and exposure, these effects may increase or decrease wave loading at the vessel&#39;s position relative to the open-ocean value. The ERA5 wave height of 4.1 m aligns closely with the 4–5 m range described in the narrative account, suggesting the open-ocean value is representative for this location.</li>
+    <li>ERA5 provides data at standard hourly intervals. The anchor drag began at 04:25 UTC, between the 04:00 and 05:00 extraction points. Both extraction points classify as EXTREME risk (100%). The environmental state at 04:25 falls within the range bounded by these two verified data points.</li>
+  </ul>
+</div>
+
+
+<div class="section" id="evidence-integrity">
+  <span class="section-num">15</span>
+  <h2 class="section-title">Evidence Integrity</h2>
+  <hr class="section-rule">
+
+  <p>All environmental values are traceable to source data through an auditable processing chain.</p>
+  <div class="integrity">
+    <div class="integrity__title">Pipeline Verification</div>
+    <dl class="integrity-grid">
+      <dt>Data Source</dt><dd>ECMWF ERA5 Atmospheric Reanalysis</dd>
+      <dt>ERA5 Resolution</dt><dd>~31 km horizontal, hourly</dd>
+      <dt>Processor Version</dt><dd><span class="pipeline-verified">5.4.3</span></dd>
+      <dt>Runner Version</dt><dd><span class="pipeline-verified">2.4.3</span></dd>
+      <dt>Gate Config Hash</dt><dd class="full-span"><span class="pipeline-verified">989aadf7b9b1a4acef8606e162015337e75a8ce5fcb4edfb1e0d79f4d59513aa</span></dd>
+      <dt>Reconstruction Timestamp</dt><dd><span class="pipeline-verified">2026-04-12T16:30:31Z</span></dd>
+      <dt>Case Position</dt><dd><span class="pipeline-verified">50.15</span>&deg;N, <span class="pipeline-verified">-5.07</span>&deg;W</dd>
+    </dl>
+  </div>
+  <table class="comparison" style="margin-top:1.5rem;">
+    <thead><tr><th class="col-param">Evidence Artifact</th><th class="col-note">Hash</th></tr></thead>
+    <tbody>
+      <tr>
+        <td style="font-size:0.8rem;">Input file (fig_inputs.json)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">716c5d1bb3a3c9be920e07cb2ca2db9dda1f1b028c1ce9ef96a2b44913fb16b8</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Batch file</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">1b3cf1b44dd5a165a5d11ae8bf2dfab8a988bd952640255f773b2f04d3754396</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk assessment policy</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">e55d9cb6149637be771860a6aa5d8a7213f181c7a8366ac55b905ee6ea69fe3b</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Unit gate config</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">989aadf7b9b1a4acef8606e162015337e75a8ce5fcb4edfb1e0d79f4d59513aa</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Threshold detection config</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">b00e295ff4061814</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Threshold detection analysis</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">1ad055ab2957b83595a5af7dd3856b761f524421c628179d1a71c87c4eed72d0</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Hazard acceleration config</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">7961f7bf72ed3941</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Hazard acceleration analysis</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">778a82d208a402b164c3e0ce73c24739761522e4a1caadb312c7a201bf5f6561</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk input (21:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">09ed30171d8bf50c72831cf0f9d0aa6b0d3c0ef22133eb7d9ea715980381056f</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk analysis (21:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">e9c26b358fe007b20f25b034f1d21e70e9e3b5af406d57e5edadd454d73b4f86</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk audit (21:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">753242f3bfc62fb95b60b358a6187a78a9df06d8698e900cf34cb2963c3be6cb</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk input (00:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">3c0389b8a74cd14fd21d8d60824fa28abd3c21df8cb102f87c8b01fe57ae61ce</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk analysis (00:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">e11290148028b154eb5a51117f5da015ddf376ff4e88629083cba35b0cd78570</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk audit (00:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">c1ebed544d710ce2292b4a3a1411be90f28cce5accfb3bfb36dc0478a950438e</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk input (03:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">572924c5b68e7178cab9ef55ba98dd8eec195e23d85ec1403057e81c5baeb300</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk analysis (03:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">57b092446fe636bee6a6d27bea49b47d480d067d90934e8fbf1928ca93b77c61</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk audit (03:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">d71c86918e2ca2c63dd32cbe55b82cefbc06949bb8e6ec3448e3ffcd7ee8f257</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk input (04:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">177315afaad6446444160d2493f3215a5b4fa793e2e033350e6f123c07a6795d</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk analysis (04:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">203be4ebfe8871538e057f0f85521f5828cc0d8114c3195ae8f195da56dad8a0</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk audit (04:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">8580c90510ce739180fc1673abf0cda25872803814021d9672202e8e6b4f9f16</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk input (05:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">d60f707c008726574c6fca03e929fd98666e78be085a3a7b49a12a7225f8b928</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk analysis (05:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">de71ddc622ed71c22b68cbe0ff6e0f17e73985f42016df9e3ae6d83d94f85f78</td>
+      </tr>
+      <tr>
+        <td style="font-size:0.8rem;">Risk audit (05:00)</td>
+        <td style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;">32b49d0c134bc49355b6dcbca75b8711f4b5c3569cabf0345e3c384004828750</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="analytical-note">
+    <div class="analytical-note__label">Reproducibility</div>
+    <p>Any party with access to the same ERA5 data, the published FishIntel pipeline version, and the gate configuration hash can independently reproduce the environmental values in this report. The reconstruction is deterministic: identical inputs produce identical outputs.</p>
+  </div>
+</div>
+
+
+<div class="section" id="methodology">
+  <span class="section-num">16</span>
+  <h2 class="section-title">Methodology</h2>
+  <hr class="section-rule">
+
+  <p>FishIntel Global reconstructs environmental conditions using ECMWF ERA5 atmospheric reanalysis — the same dataset relied upon by meteorological agencies, climate researchers, and aviation safety authorities worldwide.</p>
+  <p>ERA5 provides hourly estimates on a global grid at approximately 31 km horizontal resolution. All values pass through a unit-gated validation layer enforcing explicit conversion factors and plausibility bounds using Decimal arithmetic. The pipeline is deterministic: identical inputs always produce identical outputs.</p>
+  <p>This reconstruction operates within defined boundaries. ERA5 does not capture localised effects smaller than its grid resolution. Where a case involves mesoscale phenomena, the reconstruction presents ERA5 as the synoptic baseline, not the peak event conditions.</p>
+
+  <div class="vessel-card" style="margin-top:2rem;">
+    <div class="vessel-card__header">FishIntel Analytical Architecture</div>
+    <p style="margin-bottom:1rem;">FishIntel operates as a multi-system analytical architecture designed to reconstruct the environmental conditions surrounding maritime incidents and quantify the operational margin before irreversible outcomes occur. The architecture consists of several interlocking analytical systems:</p>
+    <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal);margin-bottom:0.8rem;">Architecture Components</div>
+    <dl class="vessel-grid" style="gap:0.1rem 2rem;">
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Source Extraction System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Converts investigation material and case information into structured machine-readable inputs.</dd>
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Environmental Reconstruction System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Retrieves and reconstructs decision-time environmental conditions using ERA5 atmospheric reanalysis.</dd>
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Unit Integrity System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Validates and canonicalises all physical measurements using explicit conversion factors and Decimal arithmetic.</dd>
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Risk Inference System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Evaluates reconstructed environmental conditions to produce structured risk assessments.</dd>
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Threshold Detection System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Identifies the first point at which environmental conditions exceed safety thresholds and quantifies the intervention window.</dd>
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Hazard Acceleration System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Classifies the rate and pattern of environmental deterioration across the incident window.</dd>
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Evidence Chain System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Generates deterministic seals, hashes, and verification artifacts for every analytical step.</dd>
+      <dt style="grid-column:1/-1;margin-top:0.4rem;">Report Generation System</dt>
+      <dd style="grid-column:1/-1;margin-bottom:0.5rem;">Renders validated outputs into investigation-grade analytical reports.</dd>
+    </dl>
+    <p style="margin-top:0.8rem;font-size:0.9rem;color:var(--ink-muted);">These systems operate together within a deterministic reconstruction pipeline. Each system produces independently verifiable outputs with cryptographic provenance.</p>
+  </div>
+
+  <div class="analytical-note">
+    <div class="analytical-note__label">Analytical Independence</div>
+    <p>FishIntel Global is an independent environmental reconstruction service. This report was produced without instruction from any party to the incident, its investigation, or any related proceedings. FishIntel’s role is complementary to national maritime accident investigation.</p>
+  </div>
+</div>
+
+
+<div class="section" id="closing-statement">
+  <span class="section-num">17</span>
+  <h2 class="section-title">Closing Statement</h2>
+  <hr class="section-rule">
+  <p>Maritime incidents are frequently described after the fact using qualitative or semi-quantitative environmental descriptions: &quot;strong winds,&quot; &quot;heavy swell,&quot; &quot;poor visibility.&quot; These descriptions are valuable for narrative understanding but do not quantify the decision-time environment with the precision required by insurers, regulators, and legal professionals.</p>
+  <p>Environmental reconstruction bridges this gap. By reconstructing the conditions that existed at the time a critical decision was made — using data sources that were available or forecastable at that time — it becomes possible to evaluate what was objectively knowable before the outcome occurred.</p>
+  <p>This does not mean that every incident was preventable. It means that the environmental context of every maritime decision can now be quantified, compared against published forecasts, and assessed for foreseeability. The data exists. The question is whether it was used.</p>
+</div>
+
+<div class="report-footer">
+  <strong>FishIntel Global</strong> — Maritime Foreseeability Intelligence<br>
+  This report is generated from verified FishIntel reconstruction pipeline outputs.<br>
+  Environmental reconstruction methodology &amp; system: &copy; FishIntel Global (FIG LTD).<br>
+  Source incident data: Crown copyright. Used in accordance with published reproduction terms.
+</div>
+</div>
+</body>
+</html>
