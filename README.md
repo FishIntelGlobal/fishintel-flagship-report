@@ -21,18 +21,23 @@ The protocol defines extraction window discipline, three-tier evidence classific
 
 ### Flagship 001 — Anchorage Failure During Forecast Storm Conditions
 
-Decision-time environmental reconstruction of a bulk carrier grounding following anchor drag during a severe winter storm at a UK coastal anchorage.
+Decision-time environmental reconstruction of a bulk carrier grounding following anchor drag during a severe winter storm at a UK coastal anchorage. 17-section report with T_irr time-to-irreversibility analysis.
 
-**Key finding:** ERA5 reconstruction separates local wind forcing from remotely generated swell, revealing that the conventional Beaufort Force 9–10 classification conflated two distinct physical mechanisms. The hazardous regime was established more than 90 minutes before the anchor began to drag.
+**Key finding:** ERA5 reconstruction separates local wind forcing from remotely generated swell, revealing that the conventional Beaufort Force 9–10 classification conflated two distinct physical mechanisms. All three environmental signals exceeded safety thresholds at 21:00 UTC, providing an 8-hour intervention window. T_irr analysis confirms REGIME_1_SAFE with +10.5 minute conservative margin — physical intervention remained possible throughout.
 
 | Field | Value |
 |---|---|
-| HTML | FIG_Flagship_Report_v1.0.html |
-| PDF | FishIntel_Environmental_Reconstruction_v1_0.pdf |
-| Reference | FIG-2025-001 |
-| Risk classification | HIGH (100%) |
-| SHA3-256 | `dd29853df2483532cc76b42f0c8c2d75bcd9e62e5fb33a783cb4ba96223d73c0` |
-| Polygon TX | `0x4376ab79a86067db85621207bed63400abd245fc84056c3e832662d536a514ff` |
+| HTML (V2) | FIG_FLAGSHIP001_report_v2.html |
+| PDF (V2) | FIG_FLAGSHIP001_report_v2.pdf |
+| HTML (V1) | FIG_Flagship_Report_v1.0.html |
+| PDF (V1) | FishIntel_Environmental_Reconstruction_v1_0.pdf |
+| Reference | FIG-FLAGSHIP-001 |
+| Risk classification | EXTREME (100%) |
+| T_irr regime | REGIME_1_SAFE (+10.5 min margin) |
+| SHA3-256 (V2) | `57cab6da05b531a54d43fb97a25618fa26f978eb6421bade1303e5e89d624fc9` |
+| Polygon TX (V2) | [`0x9f90879067b66c1e72d4384a12861a4875e125f5b5933b53aab25b311de0ff1d`](https://polygonscan.com/tx/0x9f90879067b66c1e72d4384a12861a4875e125f5b5933b53aab25b311de0ff1d) |
+| SHA3-256 (V1) | `dd29853df2483532cc76b42f0c8c2d75bcd9e62e5fb33a783cb4ba96223d73c0` |
+| Polygon TX (V1) | `0x4376ab79a86067db85621207bed63400abd245fc84056c3e832662d536a514ff` |
 
 ---
 
@@ -127,9 +132,11 @@ If the hashes match, the document has not been modified since the blockchain tim
 
 | Component | Version |
 |---|---|
-| ERA5 Processor | v5.3.0 |
-| Reconstruction Runner | v2.1.0 |
+| ERA5 Processor | v5.4.3 |
+| Reconstruction Runner | v2.4.3 |
 | Unit Gate | v1.0.0 |
+| T_irr Engine | v1.2.1 |
+| Report Renderer | v2.0.0 |
 | Output Format | era5_raw_v1 |
 | Protocol | v1.1 (April 2026) |
 
