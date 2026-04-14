@@ -15,6 +15,7 @@ The protocol defines extraction window discipline, three-tier evidence classific
 
 **Document:** [FISHINTEL_RECONSTRUCTION_PROTOCOL_v1_1.md](FISHINTEL_RECONSTRUCTION_PROTOCOL_v1_1.md)
 
+**Independent Review:** [Independent Review Protocol v1.0](FIG_Independent_Review_Protocol_v1_0.pdf) — every reconstruction independently reviewed before publication
 ---
 
 ## Published Reports
